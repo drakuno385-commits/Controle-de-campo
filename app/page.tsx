@@ -80,10 +80,31 @@ export default function GWEPEnterpriseApp() {
 
   if (loading) return <div className="min-h-screen bg-slate-950 text-cyan-400 font-mono text-xl flex items-center justify-center animate-pulse">Sincronizando com GWEP Cloud...</div>;
 
-  const handleVincular = async (postoId: string, prestadoraId: string | null) => {
+  const handleVincular = async (postoId: string, prestadoraId: string | null, dataAcao?: string) => {
     const { error } = await supabase.from('postos').update({ prestadora_id: prestadoraId }).eq('id', postoId);
-    if (!error) setPostos(postos.map(p => p.id === postoId ? { ...p, prestadoraId } : p));
-    else alert('Erro ao vincular no Supabase: ' + error.message);
+    if (!error) {
+      setPostos(postos.map(p => p.id === postoId ? { ...p, prestadoraId } : p));
+      
+      if (prestadoraId && dataAcao) {
+        await supabase.from('historico_vinculos').insert([{
+          posto_id: postoId,
+          empresa_id: prestadoraId,
+          data_implantacao: dataAcao
+        }]);
+      } else if (!prestadoraId && dataAcao) {
+        // Find the active history record for this posto (where data_encerramento is null) and close it
+        const { data: hist } = await supabase.from('historico_vinculos')
+          .select('id').eq('posto_id', postoId).is('data_encerramento', null).limit(1);
+          
+        if (hist && hist.length > 0) {
+          await supabase.from('historico_vinculos')
+            .update({ data_encerramento: dataAcao })
+            .eq('id', hist[0].id);
+        }
+      }
+    } else {
+      alert('Erro ao vincular no Supabase: ' + error.message);
+    }
   };
 
   const handleLogout = async () => {
@@ -98,11 +119,17 @@ export default function GWEPEnterpriseApp() {
       delete (dbPosto as any).id;
       const { data, error } = await supabase.from('postos').insert([dbPosto]).select();
       if (!error && data) setPostos([fromPostoDB(data[0]), ...postos]);
-      else if (error) alert('Falha ao salvar Posto na nuvem: ' + error.message);
+      else if (error) {
+        console.error('Falha Supabase Inserir Posto:', error, dbPosto);
+        alert('Falha ao salvar Posto na nuvem: ' + error.message + '\nDetalhes: ' + JSON.stringify(error.details || error.hint));
+      }
     } else {
       const { error } = await supabase.from('postos').update(dbPosto).eq('id', dbPosto.id);
       if (!error) setPostos(postos.map(p => p.id === novo.id ? novo : p));
-      else alert('Falha ao atualizar Posto: ' + error.message);
+      else {
+        console.error('Falha Supabase Atualizar Posto:', error, dbPosto);
+        alert('Falha ao atualizar Posto: ' + error.message);
+      }
     }
   };
 

@@ -35,9 +35,11 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
       if (a.status === 'Em Andamento') return;
       
       const posto = postos.find(p => p.id === a.postoId);
-      if (!posto || !posto.prestadoraId) return;
+      if (!posto) return;
+      
+      const pid = a.prestadoraId || posto.prestadoraId;
+      if (!pid) return;
 
-      const pid = posto.prestadoraId;
       if (!empresaMap[pid]) empresaMap[pid] = { nome: 'Desconhecida', bruto: 0, desconto: 0, liquido: 0 };
 
       // Valores
@@ -74,14 +76,22 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
     // Cabeçalho do CSV
     let csvContent = "Prestadora;Posto;Dias Previstos;Dias Realizados;Valor Previsto;Descontos;Valor Real a Faturar\n";
     
-    postos.forEach(posto => {
-      if (!posto.prestadoraId) return;
-      const prestadora = prestadoras.find(p => p.id === posto.prestadoraId);
-      if (!prestadora) return;
+    prestadoras.forEach(prestadora => {
+      // Find all unique postos that have apontamentos for this prestadora
+      const apontamentosDaPrestadora = apontamentos.filter(a => 
+        (a.prestadoraId === prestadora.id || (!a.prestadoraId && postos.find(p => p.id === a.postoId)?.prestadoraId === prestadora.id)) 
+        && a.status !== 'Em Andamento'
+      );
 
-      const apontamentosDoPosto = apontamentos.filter(a => a.postoId === posto.id && a.status !== 'Em Andamento');
-      
-      if (apontamentosDoPosto.length === 0) return;
+      // Group these apontamentos by Posto for the CSV rows
+      const postosIds = Array.from(new Set(apontamentosDaPrestadora.map(a => a.postoId)));
+
+      postosIds.forEach(pId => {
+        const posto = postos.find(p => p.id === pId);
+        if (!posto) return;
+
+        const apontamentosDoPosto = apontamentosDaPrestadora.filter(a => a.postoId === pId);
+        if (apontamentosDoPosto.length === 0) return;
 
       const diasPrevistos = apontamentosDoPosto.length;
       const diasRealizados = apontamentosDoPosto.filter(a => !a.falta).length;
@@ -94,7 +104,8 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
       const fDescontos = descontos.toFixed(2).replace('.', ',');
       const fReal = valorReal.toFixed(2).replace('.', ',');
 
-      csvContent += `${prestadora.nome};${posto.nome};${diasPrevistos};${diasRealizados};R$ ${fPrevisto};R$ ${fDescontos};R$ ${fReal}\n`;
+        csvContent += `${prestadora.nome};${posto.nome};${diasPrevistos};${diasRealizados};R$ ${fPrevisto};R$ ${fDescontos};R$ ${fReal}\n`;
+      });
     });
 
     const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });

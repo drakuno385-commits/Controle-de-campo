@@ -220,7 +220,8 @@ export default function AppTecnicoMobile() {
     const novoApontamento: Apontamento = {
       id: '', postoId: postoFixo, tecnico, checkIn: now.toISOString(), checkOut: null,
       falta: false, atrasoMinutos: atraso, valorOriginal: null, descontoCalculado: 0, valorFaturado: null, status: 'Em Andamento',
-      fotoUrl, turnoRealizado: turnoExecutado, servicoId: servicoId || null
+      fotoUrl, turnoRealizado: turnoExecutado, servicoId: servicoId || null,
+      prestadoraId: postoSelecionado.prestadoraId || null
     };
 
     const dbObj = toApontDB(novoApontamento);

@@ -20,6 +20,15 @@ export interface Apontamento {
   fotoUrl?: string | null; turnoRealizado?: string | null; servicoId?: string | null;
   tratadoPor?: string;
   observacaoTratamento?: string;
+  prestadoraId?: string | null;
+}
+
+export interface HistoricoVinculo {
+  id: string;
+  postoId: string;
+  empresaId: string;
+  dataImplantacao: string;
+  dataEncerramento?: string | null;
 }
 
 export interface Perfil {
