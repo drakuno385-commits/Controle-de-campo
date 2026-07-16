@@ -20,7 +20,6 @@ export default function AppTecnicoMobile() {
   const [tecnico, setTecnico] = useState("");
   const [servicoId, setServicoId] = useState("");
   
-  const [simDate, setSimDate] = useState(() => { const d = new Date(); d.setSeconds(0); d.setMilliseconds(0); return d; });
   const [foto, setFoto] = useState<File | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [aiLoading, setAiLoading] = useState(true);
@@ -125,8 +124,6 @@ export default function AppTecnicoMobile() {
     setShowCamera(false);
   };
 
-  const addMinutes = (m: number) => setSimDate(prev => new Date(prev.getTime() + m * 60000));
-  
   const ativo = apontamentos.find((a) => a.tecnico === tecnico && a.checkOut === null && !a.falta);
 
   const checkIn = async () => {
@@ -144,14 +141,16 @@ export default function AppTecnicoMobile() {
       if (faceapiRef.current) {
         const faceapi = faceapiRef.current;
         const currentImg = await faceapi.bufferToImage(foto);
-        const currentDetection = await faceapi.detectSingleFace(currentImg).withFaceLandmarks().withFaceDescriptor();
+        const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 });
+        const currentDetection = await faceapi.detectSingleFace(currentImg, options).withFaceLandmarks().withFaceDescriptor();
 
         if (!currentDetection) {
           setEnviando(false);
           return alert("❌ Nenhum rosto detectado na sua foto! Certifique-se de que seu rosto está bem iluminado e visível.");
         }
 
-        const todayStr = simDate.toISOString().substring(0, 10);
+        const now = new Date();
+        const todayStr = now.toISOString().substring(0, 10);
         const todayOutrosFotos = apontamentos.filter(a => a.checkIn.startsWith(todayStr) && a.fotoUrl && a.tecnico !== tecnico);
 
         for (const ap of todayOutrosFotos) {
@@ -175,9 +174,10 @@ export default function AppTecnicoMobile() {
     }
 
     // Calculos de Turno
+    const now = new Date();
     let turnoExecutado = 'Diurno';
-    const h = simDate.getHours();
-    const absMin = h * 60 + simDate.getMinutes();
+    const h = now.getHours();
+    const absMin = h * 60 + now.getMinutes();
     let expectedAbsMin = absMin;
 
     if (h >= 17 || h < 6) { 
@@ -218,7 +218,7 @@ export default function AppTecnicoMobile() {
     fotoUrl = publicUrlData.publicUrl;
 
     const novoApontamento: Apontamento = {
-      id: '', postoId: postoFixo, tecnico, checkIn: simDate.toISOString(), checkOut: null,
+      id: '', postoId: postoFixo, tecnico, checkIn: now.toISOString(), checkOut: null,
       falta: false, atrasoMinutos: atraso, valorOriginal: null, descontoCalculado: 0, valorFaturado: null, status: 'Em Andamento',
       fotoUrl, turnoRealizado: turnoExecutado, servicoId: servicoId || null
     };
@@ -246,7 +246,8 @@ export default function AppTecnicoMobile() {
     const escalaObj = escalas.find(e => e.id === posto.escalaId);
     const cargaHoraria = escalaObj ? escalaObj.carga_horaria : 8;
 
-    const horasTrabalhadas = (simDate.getTime() - new Date(ativo.checkIn).getTime()) / (1000 * 60 * 60);
+    const now = new Date();
+    const horasTrabalhadas = (now.getTime() - new Date(ativo.checkIn).getTime()) / (1000 * 60 * 60);
     const horasFaltantes = Math.max(0, cargaHoraria - horasTrabalhadas);
 
     let desconto = 0;
@@ -256,7 +257,7 @@ export default function AppTecnicoMobile() {
     }
 
     const apAtualizado = {
-      ...ativo, checkOut: simDate.toISOString(),
+      ...ativo, checkOut: now.toISOString(),
       valorOriginal: valorDiaUnitario, descontoCalculado: desconto, valorFaturado: valorDiaUnitario - desconto, status: 'Medido' as const
     };
 
@@ -370,13 +371,6 @@ export default function AppTecnicoMobile() {
         </div>
         
         <div className="flex gap-2 items-center">
-          <div className="flex flex-col items-end mr-2">
-            <span className="text-[10px] font-bold text-slate-500 uppercase">Tempo (Simulador)</span>
-            <span className="font-mono font-bold text-white text-sm">{simDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
-          </div>
-          <button onClick={()=>addMinutes(-60)} className="text-xs font-bold bg-slate-800 text-slate-300 px-2 py-1.5 rounded-lg">-1h</button>
-          <button onClick={()=>addMinutes(15)} className="text-xs font-bold bg-slate-800 text-slate-300 px-2 py-1.5 rounded-lg">+15m</button>
-          
           <button onClick={() => { 
             localStorage.removeItem('gwep_posto_fixo');
             localStorage.removeItem('gwep_prestadora_fixa');
