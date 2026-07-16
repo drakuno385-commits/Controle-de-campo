@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #020817;
+  --color-foreground: #f8fafc;
+  
+  --color-brand-blue: #00f3ff;
+  --color-brand-orange: #f5a623;
+  --color-brand-green: #10b981;
+  --color-brand-dark: #071A3D;
+  --color-brand-navy: #0A224E;
+
+  --font-sans: 'Manrope', sans-serif;
+  --font-display: 'Orbitron', sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  background-image: linear-gradient(135deg, #020817 0%, #071A3D 50%, #0A224E 100%);
+  background-attachment: fixed;
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Base custom classes for Premium SaaS look */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-card:hover {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom Scrollbar for better UI */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); 
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2); 
+}
