@@ -73,7 +73,7 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
             </div>
             <div>
               <label className="text-xs font-semibold text-slate-400 block mb-1">Faturamento</label>
-              <select value={novo.faturamento} onChange={e=>setNovo({...novo, faturamento: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 outline-none appearance-none focus:border-cyan-400">
+              <select value={novo.faturamento} onChange={e=>setNovo({...novo, faturamento: e.target.value as any})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 outline-none appearance-none focus:border-cyan-400">
                 <option value="Mensal">Mensal</option>
                 <option value="Diário">Diário</option>
               </select>
@@ -151,7 +151,7 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50" />
                       <span className="text-blue-400/80 font-bold flex items-center gap-2"><Clock className="w-4 h-4"/> {p.horaInicioNoturno}-{p.horaFimNoturno}</span>
                       <div className="flex flex-col items-end">
-                        <span className="font-mono text-blue-400 font-bold">{formatMoney(p.valorNoturno)}</span>
+                        <span className="font-mono text-blue-400 font-bold">{formatMoney(p.valorNoturno ?? 0)}</span>
                         <span className="text-[10px] text-blue-500/60 font-bold uppercase">{p.qtdNoturno}x Efetivo</span>
                       </div>
                     </div>

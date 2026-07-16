@@ -78,7 +78,7 @@ export default function AppTecnicoMobile() {
   const postoSelecionado = postos.find(p => p.id === postoFixo);
 
   useEffect(() => {
-    if (postoSelecionado && postoSelecionado.servicosIds?.length > 0) {
+    if (postoSelecionado && postoSelecionado.servicosIds && postoSelecionado.servicosIds.length > 0) {
       if (!postoSelecionado.servicosIds.includes(servicoId)) {
         setServicoId(postoSelecionado.servicosIds[0]);
       }
@@ -414,11 +414,11 @@ export default function AppTecnicoMobile() {
               />
             </div>
 
-            {postoSelecionado?.servicosIds?.length > 0 && (
+            {(postoSelecionado?.servicosIds?.length ?? 0) > 0 && (
               <div className="mb-8 group">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1 block mb-2">Serviço Assumido</label>
                 <select value={servicoId} onChange={e=>setServicoId(e.target.value)} className="w-full bg-slate-900 border border-slate-800 p-4 rounded-2xl text-lg text-cyan-400 outline-none font-bold appearance-none focus:border-cyan-400 shadow-inner">
-                  {postoSelecionado.servicosIds.map((sid: string) => {
+                  {postoSelecionado?.servicosIds?.map((sid: string) => {
                     const s = servicos.find(srv=>srv.id === sid);
                     return s ? <option key={sid} value={sid}>{s.nome}</option> : null;
                   })}

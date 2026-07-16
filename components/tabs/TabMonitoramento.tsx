@@ -144,9 +144,9 @@ export default function TabMonitoramento({ postos, apontamentos, currentUser, on
                 <p className="text-xs text-slate-500">Cód: #{status.posto.codigoSequencial || '---'}</p>
               </div>
               <div className="flex gap-2 items-center">
-                {status.apontamentoAtual?.fotoUrl && (
+                {status.ultimaBatida?.fotoUrl && (
                   <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.3)]">
-                    <img src={status.apontamentoAtual.fotoUrl} alt="Foto Check-in" className="w-full h-full object-cover" />
+                    <img src={status.ultimaBatida.fotoUrl} alt="Foto Check-in" className="w-full h-full object-cover" />
                   </div>
                 )}
                 {status.estado === 'Falta Crítica' && <AlertTriangle className="text-red-500 animate-pulse" />}

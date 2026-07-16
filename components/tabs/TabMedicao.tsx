@@ -188,7 +188,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
                   contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', borderColor: 'rgba(0, 243, 255, 0.2)', borderRadius: '16px', color: '#f1f5f9', backdropFilter: 'blur(10px)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)' }}
                   itemStyle={{ fontWeight: 'bold' }}
                   labelStyle={{ color: '#94a3b8', marginBottom: '8px' }}
-                  formatter={(value: number) => formatMoney(value)}
+                  formatter={(value: any) => formatMoney(Number(value))}
                 />
                 <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="circle" />
                 <Bar dataKey="bruto" name="Devido (Bruto)" fill="url(#colorBruto)" radius={[6, 6, 0, 0]} barSize={40} />

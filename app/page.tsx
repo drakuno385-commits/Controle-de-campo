@@ -151,7 +151,7 @@ export default function GWEPEnterpriseApp() {
       valorOriginal: 0,
       descontoCalculado: 0,
       valorFaturado: 0,
-      status: 'Tratado',
+      status: 'Medido' as StatusOS,
       tratadoPor: currentUser.email,
       observacaoTratamento: observacao
     };
