@@ -12,6 +12,7 @@ import { toPostoDB, fromPostoDB, toApontDB, fromApontDB } from '@/utils/mappers'
 import { formatMoney } from '@/utils/formatters';
 
 import SidebarBtn from '../components/ui/SidebarBtn';
+import CommandPalette from '../components/ui/CommandPalette';
 import TabCatalogos from '@/components/tabs/TabCatalogos';
 import TabEmpresas from '@/components/tabs/TabEmpresas';
 import TabPostos from '@/components/tabs/TabPostos';
@@ -37,6 +38,19 @@ export default function GWEPEnterpriseApp() {
   const [activeTab, setActiveTab] = useState('visao-geral');
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // Ctrl+K Shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setPaletteOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -285,10 +299,21 @@ export default function GWEPEnterpriseApp() {
         <main className="flex-1 flex flex-col z-10 w-full h-full relative bg-transparent">
           {/* TOP BAR */}
           <header className="h-[72px] border-b border-white/5 bg-[#0A1120]/40 backdrop-blur-md px-8 flex items-center justify-between shrink-0 z-30">
-            <div className="flex items-center gap-3">
-               <span className="text-slate-500 font-medium tracking-wide">Visão Geral</span>
-               <span className="text-slate-700">/</span>
-               <span className="text-cyan-400 font-bold capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                 <span className="text-slate-500 font-medium tracking-wide">Visão Geral</span>
+                 <span className="text-slate-700">/</span>
+                 <span className="text-cyan-400 font-medium capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
+              </div>
+              
+              <button 
+                onClick={() => setPaletteOpen(true)}
+                className="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-slate-400 text-sm group"
+              >
+                <Search className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+                <span className="font-medium">Busca Global...</span>
+                <span className="text-[10px] font-mono bg-slate-900 px-1.5 py-0.5 rounded text-slate-500 border border-slate-800 ml-4">Ctrl K</span>
+              </button>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex flex-col items-end">
@@ -315,6 +340,14 @@ export default function GWEPEnterpriseApp() {
               {activeTab === 'usuarios' && canAccess('usuarios') && <TabUsuarios perfis={perfis} onSave={salvarPerfil} currentUser={currentUser} />}
             </div>
           </div>
+
+          <CommandPalette 
+            isOpen={paletteOpen} 
+            onClose={() => setPaletteOpen(false)} 
+            prestadoras={prestadoras} 
+            postos={postos} 
+            onNavigate={setActiveTab} 
+          />
         </main>
         </div>
       </div>
