@@ -187,20 +187,20 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col justify-between gap-3 min-h-0">
-            <div className="relative bg-[#0A1120]/60 p-3 rounded-xl border border-white/5 overflow-hidden group/kpi">
+          <div className="flex-1 flex flex-col justify-between gap-3 min-h-0 overflow-y-auto custom-scrollbar pr-1">
+            <div className="relative bg-[#0A1120]/60 p-3 rounded-xl border border-white/5 overflow-hidden group/kpi shrink-0">
               <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/10 blur-[20px] -mr-4 -mt-4" />
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Devido (Bruto)</p>
               <h4 className="text-lg font-black text-white relative z-10">{formatMoney(kpis.devido)}</h4>
             </div>
 
-            <div className="relative bg-[#0A1120]/60 p-3 rounded-xl border border-white/5 overflow-hidden group/kpi">
+            <div className="relative bg-[#0A1120]/60 p-3 rounded-xl border border-white/5 overflow-hidden group/kpi shrink-0">
               <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/10 blur-[20px] -mr-4 -mt-4" />
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Descontos</p>
               <h4 className="text-lg font-black text-rose-400 relative z-10">{formatMoney(kpis.descontos)}</h4>
             </div>
 
-            <div className="relative bg-[#0A1120]/60 p-3 rounded-xl border border-white/5 overflow-hidden group/kpi">
+            <div className="relative bg-[#0A1120]/60 p-3 rounded-xl border border-white/5 overflow-hidden group/kpi shrink-0">
               <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 blur-[20px] -mr-4 -mt-4" />
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Líquido a Pagar</p>
               <h4 className="text-lg font-black text-emerald-400 relative z-10">{formatMoney(kpis.liquido)}</h4>
