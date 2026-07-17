@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, MapPin, Clock, Plus, Link2, Unlink, Search, 
-  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase
+  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase, Calendar, X, ChevronRight
 } from 'lucide-react';
 import { Posto, Apontamento, Prestadora, Servico, Escala, Perfil } from '../../types';
 import { formatMoney } from '../../utils/formatters';
 
-export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
+export default function TabPostos({ postos, servicos, escalas, prestadoras, onSave }: any) {
   const defaults = {
     nome: "", escalaId: escalas[0]?.id || "", servicosIds: [] as string[], faturamento: "Mensal" as any,
     temDiurno: true, horaInicioDiurno: "06:00", horaFimDiurno: "18:00", valorDiurno: null, qtdDiurno: 1,
@@ -14,6 +14,7 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
   };
   const [novo, setNovo] = useState<Partial<Posto>>(defaults);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (!novo.escalaId && escalas.length > 0 && !editingId) setNovo(n => ({...n, escalaId: escalas[0].id}));
@@ -30,11 +31,13 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
   const startEdit = (p: Posto) => {
     setNovo(p);
     setEditingId(p.id);
+    setDrawerOpen(true);
   };
 
   const cancelEdit = () => {
     setNovo(defaults);
     setEditingId(null);
+    setDrawerOpen(false);
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -46,108 +49,79 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
       onSave({ ...novo, id: `po-${Date.now()}`, prestadoraId: null } as Posto);
     }
     setNovo(defaults);
+    setDrawerOpen(false);
   };
 
   return (
-    <div className="flex flex-col xl:flex-row gap-8 h-full fade-in">
-      <div className="w-full xl:w-[420px] shrink-0 bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-3xl p-6 shadow-2xl h-fit">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-slate-100 tracking-tight flex items-center gap-2">
-            <Plus className="w-5 h-5 text-cyan-400" /> {editingId ? "Editar Posto" : "Novo Posto"}
+    <div className="h-full flex flex-col relative fade-in">
+      
+      {/* HEADER ACTIONS */}
+      <div className="flex justify-between items-center mb-8 shrink-0">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-100 tracking-tight flex items-center gap-3">
+            Gestão de Postos Operacionais
           </h2>
-          {editingId && <button type="button" onClick={cancelEdit} className="text-xs text-rose-400 hover:text-rose-300 font-bold bg-rose-500/10 px-2 py-1 rounded-md">Cancelar</button>}
+          <p className="text-sm text-slate-500 mt-1">Gerencie os locais de atendimento, valores contratuais e escalas.</p>
         </div>
-        <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <div>
-            <label className="text-xs font-semibold text-slate-400 block mb-1">Nome do Serviço / Local</label>
-            <input required type="text" value={novo.nome} onChange={e=>setNovo({...novo, nome: e.target.value})} placeholder="Ex: Portaria Norte" className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:border-cyan-400/50 outline-none transition-colors" />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">Escala Padrão</label>
-              <select required value={novo.escalaId || ""} onChange={e=>setNovo({...novo, escalaId: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 outline-none appearance-none focus:border-cyan-400">
-                <option value="" disabled>Selecione a Escala...</option>
-                {escalas.map((e:any) => <option key={e.id} value={e.id}>{e.nome}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">Faturamento</label>
-              <select value={novo.faturamento} onChange={e=>setNovo({...novo, faturamento: e.target.value as any})} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 outline-none appearance-none focus:border-cyan-400">
-                <option value="Mensal">Mensal</option>
-                <option value="Diário">Diário</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-slate-400 block mb-2">Serviços Executados</label>
-            <div className="flex flex-wrap gap-1.5 p-3 bg-slate-950 border border-slate-800 rounded-xl max-h-[140px] overflow-y-auto">
-              {servicos.length === 0 && <span className="text-slate-500 text-xs">Crie serviços no Catálogo primeiro.</span>}
-              {servicos.map((s:any) => (
-                <label key={s.id} className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer border transition-colors ${novo.servicosIds?.includes(s.id) ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}`}>
-                  <input type="checkbox" className="hidden" checked={novo.servicosIds?.includes(s.id) || false} onChange={() => toggleServico(s.id)} />
-                  <span className="text-xs font-semibold">{s.nome}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <ShiftPanel title="Turno Diurno" active={novo.temDiurno!} toggle={() => setNovo({...novo, temDiurno: !novo.temDiurno})} hI={novo.horaInicioDiurno!} setHi={(v: any) => setNovo({...novo, horaInicioDiurno: v})} hF={novo.horaFimDiurno!} setHf={(v: any) => setNovo({...novo, horaFimDiurno: v})} val={novo.valorDiurno} setVal={(v: any) => setNovo({...novo, valorDiurno: v})} color="cyan" qtd={novo.qtdDiurno} setQtd={(v: any) => setNovo({...novo, qtdDiurno: v})} />
-            <ShiftPanel title="Turno Noturno" active={novo.temNoturno!} toggle={() => setNovo({...novo, temNoturno: !novo.temNoturno})} hI={novo.horaInicioNoturno!} setHi={(v: any) => setNovo({...novo, horaInicioNoturno: v})} hF={novo.horaFimNoturno!} setHf={(v: any) => setNovo({...novo, horaFimNoturno: v})} val={novo.valorNoturno} setVal={(v: any) => setNovo({...novo, valorNoturno: v})} color="blue" qtd={novo.qtdNoturno} setQtd={(v: any) => setNovo({...novo, qtdNoturno: v})} />
-          </div>
-          
-          <button type="submit" className="w-full mt-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-xl text-sm shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 active:translate-y-0 transition-all">
-            {editingId ? "Salvar Alterações" : "Criar Posto"}
-          </button>
-        </form>
+        <button 
+          onClick={() => setDrawerOpen(true)}
+          className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold px-6 py-3 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all flex items-center gap-2 hover:-translate-y-0.5"
+        >
+          <Plus className="w-5 h-5" /> Novo Posto
+        </button>
       </div>
 
-      <div className="flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-6">
-          {postos.length === 0 && <p className="text-slate-500 col-span-full">Nenhum posto cadastrado.</p>}
+      {/* MAIN GRID FULL WIDTH */}
+      <div className="flex-1 overflow-y-auto pr-2 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+          {postos.length === 0 && (
+            <div className="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
+              <MapPin className="w-12 h-12 text-slate-600 mb-4" />
+              <p className="text-slate-400 font-medium text-lg">Nenhum posto cadastrado</p>
+              <p className="text-slate-500 text-sm mt-1">Clique no botão "Novo Posto" no topo para começar.</p>
+            </div>
+          )}
           {postos.map((p: Posto) => {
+            const vinculada = prestadoras?.find((emp: Prestadora) => emp.id === p.prestadoraId);
             const esc = escalas.find((e:any) => e.id === p.escalaId)?.nome || 'Sem Escala';
             return (
-              <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] hover:-translate-y-1 transition-all duration-300 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex flex-col relative overflow-hidden group">
+              <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 hover:border-blue-500/30 hover:bg-white/[0.04] transition-all duration-300 backdrop-blur-2xl group shadow-lg flex flex-col">
+                
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-slate-100 font-bold tracking-tight text-base leading-tight flex-1 pr-2">
-                    <span className="text-slate-500 text-xs mr-2 font-mono">#{p.codigoSequencial || '---'}</span>
-                    {p.nome}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {p.prestadoraId === null && (
-                      <button onClick={() => startEdit(p)} className="text-cyan-400 hover:text-cyan-300 p-1.5 hover:bg-cyan-500/10 rounded-lg transition-colors" title="Editar Posto">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                      </button>
-                    )}
-                    <span className="text-xs font-bold bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg whitespace-nowrap shrink-0">{esc} | {p.faturamento}</span>
+                  <div className="w-12 h-12 bg-blue-950/40 border border-white/5 rounded-xl flex items-center justify-center group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all shrink-0">
+                    <MapPin className="w-6 h-6 text-blue-400" />
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => startEdit(p)} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors" title="Editar Posto">
+                      <LayoutDashboard className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                
-                {p.servicosIds && p.servicosIds.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {p.servicosIds.map(sid => {
-                      const sn = servicos.find((s:any)=>s.id === sid)?.nome;
-                      return sn ? <span key={sid} className="text-[10px] font-bold text-slate-400 border border-slate-800 rounded px-2 py-0.5">{sn}</span> : null;
-                    })}
-                  </div>
-                )}
 
-                <div className="flex flex-col gap-3 mt-auto pt-4 border-t border-slate-800/50">
+                <div className="flex-1">
+                  <h3 className="text-slate-100 font-bold tracking-tight text-lg mb-2">{p.nome}</h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-slate-800 text-slate-400 border border-slate-700">{esc} | {p.faturamento}</span>
+                    {vinculada ? 
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-cyan-950 text-cyan-400 border border-cyan-900 flex items-center gap-1"><Link2 className="w-3 h-3"/> {vinculada.nome}</span> :
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-rose-950 text-rose-400 border border-rose-900">Sem Vínculo</span>
+                    }
+                  </div>
+                </div>
+
+                <div className="space-y-2 mt-auto">
                   {p.temDiurno && (
-                    <div className="flex justify-between items-center text-sm bg-cyan-950/20 border border-cyan-500/10 px-4 py-3 rounded-xl shadow-inner relative overflow-hidden">
+                    <div className="flex justify-between items-center text-sm bg-[#0A1120]/60 border border-white/5 px-4 py-3 rounded-xl relative overflow-hidden">
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500/50" />
                       <span className="text-cyan-400/80 font-bold flex items-center gap-2"><Clock className="w-4 h-4"/> {p.horaInicioDiurno}-{p.horaFimDiurno}</span>
                       <div className="flex flex-col items-end">
-                        <span className="font-mono text-cyan-400 font-bold">{formatMoney(p.valorDiurno)}</span>
+                        <span className="font-mono text-cyan-400 font-bold">{formatMoney(p.valorDiurno ?? 0)}</span>
                         <span className="text-[10px] text-cyan-500/60 font-bold uppercase">{p.qtdDiurno}x Efetivo</span>
                       </div>
                     </div>
                   )}
                   {p.temNoturno && (
-                    <div className="flex justify-between items-center text-sm bg-blue-950/20 border border-blue-500/10 px-4 py-3 rounded-xl shadow-inner relative overflow-hidden">
+                    <div className="flex justify-between items-center text-sm bg-[#0A1120]/60 border border-white/5 px-4 py-3 rounded-xl relative overflow-hidden">
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50" />
                       <span className="text-blue-400/80 font-bold flex items-center gap-2"><Clock className="w-4 h-4"/> {p.horaInicioNoturno}-{p.horaFimNoturno}</span>
                       <div className="flex flex-col items-end">
@@ -162,6 +136,91 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
           })}
         </div>
       </div>
+
+      {/* SLIDE-OVER DRAWER (GAVETA DE CADASTRO) */}
+      <div className={`fixed inset-0 z-50 flex justify-end transition-opacity duration-300 ${drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={cancelEdit} />
+        
+        <div className={`relative w-[540px] bg-[#0A1120] border-l border-white/10 h-full shadow-2xl flex flex-col transform transition-transform duration-300 ease-out ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/[0.02] shrink-0">
+            <h2 className="text-xl font-bold text-slate-100 flex items-center gap-3">
+              <Plus className="w-5 h-5 text-cyan-400" /> {editingId ? "Editar Posto" : "Cadastrar Posto"}
+            </h2>
+            <button onClick={cancelEdit} className="p-2 text-slate-500 hover:text-slate-300 transition-colors rounded-lg hover:bg-white/5">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-8">
+            <form id="novoPostoForm" onSubmit={onSubmit} className="flex flex-col gap-6">
+              
+              <div className="group">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Identificação do Posto</label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-cyan-400 transition-colors" />
+                  <input required type="text" value={novo.nome} onChange={e=>setNovo({...novo, nome: e.target.value})} placeholder="Ex: Hospital Municipal - Portaria" className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all placeholder:text-slate-600 font-medium" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="group">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Regra de Faturamento</label>
+                  <div className="relative">
+                    <BarChart3 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-cyan-400 transition-colors" />
+                    <select required value={novo.faturamento} onChange={e=>setNovo({...novo, faturamento: e.target.value})} className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-12 pr-10 py-4 text-sm text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all appearance-none font-medium cursor-pointer">
+                      <option value="Mensal" className="bg-slate-900">Mensal Fixo</option>
+                      <option value="Diário" className="bg-slate-900">Diário por Evento</option>
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                  </div>
+                </div>
+                <div className="group">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Escala Operacional</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-cyan-400 transition-colors" />
+                    <select required value={novo.escalaId||''} onChange={e=>setNovo({...novo, escalaId: e.target.value})} className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-12 pr-10 py-4 text-sm text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all appearance-none font-medium cursor-pointer">
+                      {escalas.map((e: Escala) => <option key={e.id} value={e.id} className="bg-slate-900">{e.nome}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-3">Serviços Exigidos</label>
+                <div className="flex flex-wrap gap-2">
+                  {servicos.length === 0 && <span className="text-slate-600 text-xs italic">Nenhum catálogo de serviço criado.</span>}
+                  {servicos.map((s: Servico) => {
+                    const active = novo.servicosIds?.includes(s.id);
+                    return (
+                      <button type="button" key={s.id} onClick={() => toggleServico(s.id)} className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${active ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-400' : 'bg-white/[0.02] border-white/10 text-slate-400 hover:border-slate-600 hover:text-slate-200'}`}>
+                        {s.nome}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 my-4" />
+              
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block">Turnos e Valores</label>
+              <div className="space-y-4">
+                <ShiftPanel title="Turno Diurno" active={novo.temDiurno} toggle={()=>setNovo({...novo, temDiurno: !novo.temDiurno})} hI={novo.horaInicioDiurno} setHi={(v:any)=>setNovo({...novo, horaInicioDiurno: v})} hF={novo.horaFimDiurno} setHf={(v:any)=>setNovo({...novo, horaFimDiurno: v})} val={novo.valorDiurno} setVal={(v:any)=>setNovo({...novo, valorDiurno: v})} color="cyan" qtd={novo.qtdDiurno} setQtd={(v:any)=>setNovo({...novo, qtdDiurno:v})} />
+                
+                <ShiftPanel title="Turno Noturno" active={novo.temNoturno} toggle={()=>setNovo({...novo, temNoturno: !novo.temNoturno})} hI={novo.horaInicioNoturno} setHi={(v:any)=>setNovo({...novo, horaInicioNoturno: v})} hF={novo.horaFimNoturno} setHf={(v:any)=>setNovo({...novo, horaFimNoturno: v})} val={novo.valorNoturno} setVal={(v:any)=>setNovo({...novo, valorNoturno: v})} color="blue" qtd={novo.qtdNoturno} setQtd={(v:any)=>setNovo({...novo, qtdNoturno:v})} />
+              </div>
+              
+            </form>
+          </div>
+
+          <div className="p-6 border-t border-white/5 bg-white/[0.01] shrink-0">
+            <button form="novoPostoForm" type="submit" className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-4 rounded-xl text-sm shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2">
+              Salvar Registro <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
@@ -169,29 +228,29 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
 export function ShiftPanel({ title, active, toggle, hI, setHi, hF, setHf, val, setVal, color, qtd, setQtd }: any) {
   const theme = color === 'cyan' ? 'accent-cyan-400 text-cyan-400' : 'accent-blue-500 text-blue-400';
   return (
-    <div className={`bg-slate-950/50 border border-slate-800 rounded-xl p-3 transition-all duration-500 ${active ? 'opacity-100' : 'opacity-40 grayscale pointer-events-none'}`}>
-      <div className="flex items-center gap-3 mb-3 cursor-pointer pointer-events-auto" onClick={toggle}>
-        <div className={`w-10 h-5 rounded-full p-1 transition-colors duration-300 flex items-center shadow-inner ${active ? (color==='cyan'?'bg-cyan-500':'bg-blue-500') : 'bg-slate-700'}`}>
+    <div className={`bg-[#0A1120] border border-white/10 rounded-xl p-4 transition-all duration-500 ${active ? 'opacity-100' : 'opacity-40 grayscale pointer-events-none'}`}>
+      <div className="flex items-center gap-3 mb-4 cursor-pointer pointer-events-auto" onClick={toggle}>
+        <div className={`w-10 h-5 rounded-full p-1 transition-colors duration-300 flex items-center shadow-inner ${active ? (color==='cyan'?'bg-cyan-500':'bg-blue-500') : 'bg-slate-800'}`}>
           <div className={`w-3 h-3 bg-white rounded-full transition-transform duration-300 shadow-sm ${active ? 'translate-x-5' : 'translate-x-0'}`} />
         </div>
         <span className="text-sm font-semibold text-slate-200">{title}</span>
       </div>
-      <div className={`grid grid-cols-2 lg:grid-cols-4 gap-2 transition-opacity duration-500`}>
+      <div className={`grid grid-cols-2 lg:grid-cols-4 gap-3 transition-opacity duration-500`}>
         <div className="relative group">
-          <Clock className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 group-focus-within:text-slate-300 transition-colors" />
-          <input type="time" title="Hora de Início" value={hI} onChange={e=>setHi(e.target.value)} className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-2 py-2 text-xs text-slate-300 outline-none focus:border-slate-600 font-mono transition-colors" />
+          <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-slate-300 transition-colors" />
+          <input type="time" title="Hora de Início" value={hI} onChange={e=>setHi(e.target.value)} className="w-full bg-white/[0.02] border border-white/10 rounded-lg pl-9 pr-2 py-2 text-sm text-slate-300 outline-none focus:border-slate-500 font-mono transition-colors" />
         </div>
         <div className="relative group">
-          <Clock className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 group-focus-within:text-slate-300 transition-colors" />
-          <input type="time" title="Hora de Fim" value={hF} onChange={e=>setHf(e.target.value)} className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-2 py-2 text-xs text-slate-300 outline-none focus:border-slate-600 font-mono transition-colors" />
+          <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-slate-300 transition-colors" />
+          <input type="time" title="Hora de Fim" value={hF} onChange={e=>setHf(e.target.value)} className="w-full bg-white/[0.02] border border-white/10 rounded-lg pl-9 pr-2 py-2 text-sm text-slate-300 outline-none focus:border-slate-500 font-mono transition-colors" />
         </div>
         <div className="relative group">
-          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 group-focus-within:text-slate-400 transition-colors">R$</span>
-          <input type="number" title="Valor Base Unitário" value={val||''} onChange={e=>setVal(Number(e.target.value))} className={`w-full bg-slate-900 border border-slate-800 rounded-lg pl-7 pr-2 py-2 text-xs font-mono font-bold outline-none ${theme} focus:border-${color}-500/50 transition-colors`} placeholder="Valor" />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500 group-focus-within:text-slate-400 transition-colors">R$</span>
+          <input type="number" title="Valor Base Unitário" value={val||''} onChange={e=>setVal(Number(e.target.value))} className={`w-full bg-white/[0.02] border border-white/10 rounded-lg pl-8 pr-2 py-2 text-sm font-mono font-bold outline-none ${theme} focus:border-${color}-500/50 transition-colors`} placeholder="Valor" />
         </div>
         <div className="relative group">
-          <Users className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 group-focus-within:text-slate-300 transition-colors" />
-          <input type="number" min="1" title="Quantidade de Funcionários" value={qtd||1} onChange={e=>setQtd(Number(e.target.value))} className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-2 py-2 text-xs font-bold text-slate-200 outline-none focus:border-slate-600 transition-colors" placeholder="Qtd" />
+          <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-slate-300 transition-colors" />
+          <input type="number" min="1" title="Quantidade de Funcionários" value={qtd||1} onChange={e=>setQtd(Number(e.target.value))} className="w-full bg-white/[0.02] border border-white/10 rounded-lg pl-9 pr-2 py-2 text-sm font-bold text-slate-200 outline-none focus:border-slate-500 transition-colors" placeholder="Qtd" />
         </div>
       </div>
     </div>
