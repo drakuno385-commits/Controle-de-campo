@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Camera, CheckCircle2, XCircle, AlertTriangle, Settings, Building2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { Posto, Apontamento, Servico, Escala, Prestadora } from '../../types';
@@ -12,6 +13,13 @@ export default function AppTecnicoMobile() {
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [escalas, setEscalas] = useState<Escala[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) router.push('/login');
+    });
+  }, [router]);
 
   const [postoFixo, setPostoFixo] = useState<string | null>(null);
   const [prestadoraFixa, setPrestadoraFixa] = useState<string | null>(null);

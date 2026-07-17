@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, MapPin, Clock, Plus, Link2, Unlink, Search, 
-  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase, Calendar, X, ChevronRight, MoreVertical
+  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase, Calendar, X, ChevronRight, MoreVertical, ShieldAlert, Trash2
 } from 'lucide-react';
 import { Posto, Apontamento, Prestadora, Servico, Escala, Perfil } from '../../types';
 import { formatMoney } from '../../utils/formatters';
 
-export default function TabPostos({ postos, servicos, escalas, prestadoras, onSave }: any) {
+export default function TabPostos({ postos, servicos, escalas, prestadoras, onSave, onDelete }: any) {
   const defaults = {
     nome: "", escalaId: escalas[0]?.id || "", servicosIds: [] as string[], faturamento: "Mensal" as any,
     temDiurno: true, horaInicioDiurno: "06:00", horaFimDiurno: "18:00", valorDiurno: null, qtdDiurno: 1,
@@ -34,6 +34,10 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
   };
 
   const startEdit = (p: Posto) => {
+    if (p.prestadoraId) {
+      alert("Este posto já está vinculado a uma empresa. Não é possível alterar seus dados diretamente nesta tela.");
+      return;
+    }
     setNovo(p);
     setEditingId(p.id);
     setDrawerOpen(true);
@@ -154,9 +158,20 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
                       ) : <span className="text-xs text-slate-600">-</span>}
                     </td>
                     <td className="px-6 py-2 text-right">
-                      <button onClick={() => startEdit(p)} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-blue-400 transition-colors" title="Editar Posto">
-                        <LayoutDashboard className="w-4 h-4" />
-                      </button>
+                      <div className="flex justify-end gap-1">
+                        {p.prestadoraId ? (
+                          <button className="p-1.5 rounded-lg text-slate-700 cursor-not-allowed" title="Posto Vinculado (Bloqueado)">
+                            <ShieldAlert className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button onClick={() => startEdit(p)} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-blue-400 transition-colors" title="Editar Posto">
+                            <LayoutDashboard className="w-4 h-4" />
+                          </button>
+                        )}
+                        <button onClick={() => onDelete(p.id)} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-rose-400 transition-colors" title="Excluir Posto">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

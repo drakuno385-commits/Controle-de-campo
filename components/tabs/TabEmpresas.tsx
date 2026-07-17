@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Building2, Plus, FileText, X, ChevronRight, MoreVertical, Search } from 'lucide-react';
+import { Building2, Plus, FileText, X, ChevronRight, MoreVertical, Search, Trash2 } from 'lucide-react';
 import { Prestadora } from '../../types';
 
-export default function TabEmpresas({ prestadoras, onCreate }: any) {
+export default function TabEmpresas({ prestadoras, onCreate, onDelete }: any) {
   const [nova, setNova] = useState({ nome: '', cnpj: '' });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [busca, setBusca] = useState("");
@@ -86,8 +86,8 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
                     <span className="text-xs font-mono text-slate-400">{p.cnpj}</span>
                   </td>
                   <td className="px-6 py-2 text-right">
-                    <button className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors" title="Opções">
-                      <MoreVertical className="w-4 h-4" />
+                    <button onClick={() => onDelete(p.id)} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-rose-400 transition-colors" title="Excluir Empresa">
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>

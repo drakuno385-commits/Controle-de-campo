@@ -160,6 +160,27 @@ export default function GWEPEnterpriseApp() {
     else if (error) alert('Erro ao criar serviço: ' + error.message);
   };
 
+  const deletarPosto = async (id: string) => {
+    if (confirm("Tem certeza que deseja excluir este posto? Ele não poderá ser recuperado.")) {
+      const { error } = await supabase.from('postos').delete().eq('id', id);
+      if (!error) setPostos(postos.filter(p => p.id !== id));
+      else alert('Erro ao excluir posto: ' + error.message);
+    }
+  };
+
+  const deletarEmpresa = async (id: string) => {
+    const postosVinculados = postos.filter(p => p.prestadoraId === id);
+    if (postosVinculados.length > 0) {
+      alert("Não é possível excluir esta empresa, pois existem postos vinculados a ela. Desvincule-os primeiro.");
+      return;
+    }
+    if (confirm("Tem certeza que deseja excluir esta empresa?")) {
+      const { error } = await supabase.from('empresas').delete().eq('id', id);
+      if (!error) setPrestadoras(prestadoras.filter(p => p.id !== id));
+      else alert('Erro ao excluir empresa: ' + error.message);
+    }
+  };
+
   const salvarPerfil = async (p: Perfil) => {
     if (p.id) {
       const { error } = await supabase.from('perfis').update(p).eq('id', p.id);
@@ -330,8 +351,8 @@ export default function GWEPEnterpriseApp() {
           <div className="flex-1 p-6 overflow-y-auto">
             <div className="w-full h-full flex flex-col">
               {activeTab === 'visao-geral' && <TabVisaoGeral prestadoras={prestadoras} postos={postos} apontamentos={apontamentos} onNavigate={setActiveTab} />}
-              {activeTab === 'empresas' && canAccess('empresas') && <TabEmpresas prestadoras={prestadoras} onCreate={criarPrestadora} />}
-              {activeTab === 'postos' && canAccess('postos') && <TabPostos postos={postos} servicos={servicos} escalas={escalas} onSave={salvarPosto} />}
+              {activeTab === 'empresas' && canAccess('empresas') && <TabEmpresas prestadoras={prestadoras} onCreate={criarPrestadora} onDelete={deletarEmpresa} />}
+              {activeTab === 'postos' && canAccess('postos') && <TabPostos postos={postos} servicos={servicos} escalas={escalas} onSave={salvarPosto} onDelete={deletarPosto} />}
               {activeTab === 'catalogos' && canAccess('catalogos') && <TabCatalogos servicos={servicos} escalas={escalas} onCreateServico={criarServico} onCreateEscala={criarEscala} />}
               {activeTab === 'vinculos' && canAccess('vinculos') && <TabVinculos postos={postos} prestadoras={prestadoras} onVincular={handleVincular} isDragging={isDragging} setIsDragging={setIsDragging} />}
               {activeTab === 'monitoramento' && canAccess('monitoramento') && <TabMonitoramento postos={postos} apontamentos={apontamentos} currentUser={currentUser} onTratarOcorrencia={tratarOcorrencia} />}
