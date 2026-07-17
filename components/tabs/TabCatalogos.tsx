@@ -69,8 +69,8 @@ export default function TabCatalogos({ servicos, escalas, onCreateServico, onCre
           <div className="flex-1 space-y-2 relative z-10">
             {servicos.length === 0 && <div className="p-8 text-center text-slate-500 text-sm">Nenhum serviço cadastrado.</div>}
             {servicos.map((s:any) => (
-              <div key={s.id} className="p-4 bg-[#0A1120]/60 border border-white/5 rounded-xl flex justify-between items-center hover:border-cyan-500/30 transition-colors">
-                <span className="font-bold text-slate-300">{s.nome}</span>
+              <div key={s.id} className="px-4 py-2.5 bg-[#0A1120]/60 border border-white/5 rounded-lg flex justify-between items-center hover:border-cyan-500/30 transition-colors">
+                <span className="text-sm font-bold text-slate-300">{s.nome}</span>
               </div>
             ))}
           </div>
@@ -84,9 +84,9 @@ export default function TabCatalogos({ servicos, escalas, onCreateServico, onCre
           <div className="flex-1 space-y-2 relative z-10">
             {escalas.length === 0 && <div className="p-8 text-center text-slate-500 text-sm">Nenhuma escala cadastrada.</div>}
             {escalas.map((e:any) => (
-              <div key={e.id} className="p-4 bg-[#0A1120]/60 border border-white/5 rounded-xl flex justify-between items-center hover:border-emerald-500/30 transition-colors">
-                <span className="font-bold text-slate-300">{e.nome}</span>
-                <span className="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase tracking-widest">{e.carga_horaria}h Totais</span>
+              <div key={e.id} className="px-4 py-2.5 bg-[#0A1120]/60 border border-white/5 rounded-lg flex justify-between items-center hover:border-emerald-500/30 transition-colors">
+                <span className="text-sm font-bold text-slate-300">{e.nome}</span>
+                <span className="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-widest">{e.carga_horaria}h Totais</span>
               </div>
             ))}
           </div>

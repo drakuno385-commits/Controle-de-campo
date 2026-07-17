@@ -94,10 +94,10 @@ export default function TabUsuarios({ perfis, onSave }: any) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-white/5 bg-white/[0.01]">
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[30%]">Usuário / E-mail</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[15%]">Nível</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[45%]">Módulos Permitidos</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[10%] text-right">Ações</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[30%]">Usuário / E-mail</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[15%]">Nível</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[45%]">Módulos Permitidos</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[10%] text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -111,34 +111,34 @@ export default function TabUsuarios({ perfis, onSave }: any) {
               )}
               {perfisFiltrados.map((p: Perfil) => (
                 <tr key={p.id} className="hover:bg-white/[0.02] group transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-2">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-inner border shrink-0 ${p.role === 'MASTER' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-[#0A1120]/80 text-slate-300 border-white/5'}`}>
+                      <div className={`w-7 h-7 rounded flex items-center justify-center font-bold text-sm shadow-inner border shrink-0 ${p.role === 'MASTER' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-[#0A1120]/80 text-slate-300 border-white/5'}`}>
                         {p.email.charAt(0).toUpperCase()}
                       </div>
-                      <span className="font-bold text-slate-200 group-hover:text-cyan-50 transition-colors truncate">{p.email}</span>
+                      <span className="text-sm font-bold text-slate-200 group-hover:text-cyan-50 transition-colors truncate">{p.email}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`text-[10px] font-black tracking-widest uppercase px-2 py-1 rounded ${p.role === 'MASTER' ? 'bg-cyan-950/50 text-cyan-400' : 'bg-slate-800 text-slate-400'}`}>
+                  <td className="px-6 py-2">
+                    <span className={`text-[9px] font-black tracking-widest uppercase px-2 py-0.5 rounded ${p.role === 'MASTER' ? 'bg-cyan-950/50 text-cyan-400' : 'bg-slate-800 text-slate-400'}`}>
                       {p.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-2">
                     {p.role === 'MASTER' ? (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-cyan-950/30 text-cyan-500/80 flex items-center gap-1 w-fit"><Shield className="w-3 h-3"/> Acesso Irrestrito Total</span>
+                      <span className="text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-cyan-950/30 text-cyan-500/80 flex items-center gap-1 w-fit"><Shield className="w-2.5 h-2.5"/> Acesso Irrestrito Total</span>
                     ) : (
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1">
                         {p.telas_permitidas.length === 0 && <span className="text-xs text-rose-400 font-medium">Nenhum</span>}
                         {p.telas_permitidas.map(t => {
                           const tName = TELAS_SISTEMA.find(s=>s.id === t)?.nome || t;
-                          return <span key={t} className="text-[9px] font-bold uppercase tracking-wider bg-[#0A1120]/60 text-slate-400 border border-white/5 px-2 py-1 rounded-md whitespace-nowrap">{tName}</span>
+                          return <span key={t} className="text-[8px] font-bold uppercase tracking-widest bg-[#0A1120]/60 text-slate-400 border border-white/5 px-1.5 py-0.5 rounded whitespace-nowrap">{tName}</span>
                         })}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <button onClick={() => startEdit(p)} className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors" title="Editar">
+                  <td className="px-6 py-2 text-right">
+                    <button onClick={() => startEdit(p)} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors" title="Editar">
                       <LayoutDashboard className="w-4 h-4" />
                     </button>
                   </td>

@@ -96,11 +96,11 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-white/5 bg-white/[0.01]">
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Posto / Operação</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Vínculo</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Turno Diurno</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Turno Noturno</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Ações</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Posto / Operação</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Vínculo</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Turno Diurno</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Turno Noturno</th>
+                <th className="px-6 py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -117,44 +117,44 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
                 const esc = escalas.find((e:any) => e.id === p.escalaId)?.nome || 'Sem Escala';
                 return (
                   <tr key={p.id} className="hover:bg-white/[0.02] group transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#0A1120]/80 border border-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:border-blue-500/30 group-hover:bg-blue-500/5 transition-all">
-                          <MapPin className="w-5 h-5 text-blue-500" />
+                        <div className="w-7 h-7 bg-[#0A1120]/80 border border-white/5 rounded flex items-center justify-center shrink-0 group-hover:border-blue-500/30 group-hover:bg-blue-500/5 transition-all">
+                          <MapPin className="w-3.5 h-3.5 text-blue-500" />
                         </div>
                         <div>
-                          <div className="font-bold text-slate-200 group-hover:text-blue-50 transition-colors mb-1">{p.nome}</div>
+                          <div className="font-bold text-xs text-slate-200 group-hover:text-blue-50 transition-colors mb-0.5">{p.nome}</div>
                           <div className="flex gap-1.5 flex-wrap">
-                            <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{esc}</span>
-                            <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{p.faturamento}</span>
+                            <span className="text-[8px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{esc}</span>
+                            <span className="text-[8px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{p.faturamento}</span>
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       {vinculada ? 
-                        <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-cyan-950/50 text-cyan-400 flex items-center gap-1 w-fit"><Link2 className="w-3 h-3"/> {vinculada.nome}</span> :
-                        <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-rose-950/50 text-rose-400 w-fit">Sem Vínculo</span>
+                        <span className="text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-cyan-950/50 text-cyan-400 flex items-center gap-1 w-fit"><Link2 className="w-2.5 h-2.5"/> {vinculada.nome}</span> :
+                        <span className="text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-rose-950/50 text-rose-400 w-fit">Sem Vínculo</span>
                       }
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       {p.temDiurno ? (
                         <div className="flex flex-col">
-                          <span className="text-xs text-cyan-400 font-bold flex items-center gap-1"><Clock className="w-3 h-3"/> {p.horaInicioDiurno}-{p.horaFimDiurno}</span>
-                          <span className="text-[10px] text-slate-500 font-mono mt-0.5">{formatMoney(p.valorDiurno ?? 0)} ({p.qtdDiurno}x)</span>
+                          <span className="text-[11px] text-cyan-400 font-bold flex items-center gap-1"><Clock className="w-2.5 h-2.5"/> {p.horaInicioDiurno}-{p.horaFimDiurno}</span>
+                          <span className="text-[9px] text-slate-500 font-mono mt-0.5">{formatMoney(p.valorDiurno ?? 0)} ({p.qtdDiurno}x)</span>
                         </div>
                       ) : <span className="text-xs text-slate-600">-</span>}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       {p.temNoturno ? (
                         <div className="flex flex-col">
-                          <span className="text-xs text-blue-400 font-bold flex items-center gap-1"><Clock className="w-3 h-3"/> {p.horaInicioNoturno}-{p.horaFimNoturno}</span>
-                          <span className="text-[10px] text-slate-500 font-mono mt-0.5">{formatMoney(p.valorNoturno ?? 0)} ({p.qtdNoturno}x)</span>
+                          <span className="text-[11px] text-blue-400 font-bold flex items-center gap-1"><Clock className="w-2.5 h-2.5"/> {p.horaInicioNoturno}-{p.horaFimNoturno}</span>
+                          <span className="text-[9px] text-slate-500 font-mono mt-0.5">{formatMoney(p.valorNoturno ?? 0)} ({p.qtdNoturno}x)</span>
                         </div>
                       ) : <span className="text-xs text-slate-600">-</span>}
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <button onClick={() => startEdit(p)} className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-blue-400 transition-colors" title="Editar Posto">
+                    <td className="px-6 py-2 text-right">
+                      <button onClick={() => startEdit(p)} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-blue-400 transition-colors" title="Editar Posto">
                         <LayoutDashboard className="w-4 h-4" />
                       </button>
                     </td>
