@@ -94,7 +94,6 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
           );
         })}
       </div>
-      </div>
 
       {modalAcao && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 fade-in">
