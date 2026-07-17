@@ -4,7 +4,8 @@ export const toPostoDB = (p: Partial<Posto>) => ({
   id: p.id, prestadora_id: p.prestadoraId, nome: p.nome, faturamento: p.faturamento,
   escala_id: p.escalaId || null, servicos_ids: p.servicosIds || [], qtd_diurno: p.qtdDiurno || 1, qtd_noturno: p.qtdNoturno || 1,
   tem_diurno: p.temDiurno, hora_inicio_diurno: p.horaInicioDiurno, hora_fim_diurno: p.horaFimDiurno, valor_diurno: p.valorDiurno ? Number(p.valorDiurno) : null,
-  tem_noturno: p.temNoturno, hora_inicio_noturno: p.horaInicioNoturno, hora_fim_noturno: p.horaFimNoturno, valor_noturno: p.valorNoturno ? Number(p.valorNoturno) : null
+  tem_noturno: p.temNoturno, hora_inicio_noturno: p.horaInicioNoturno, hora_fim_noturno: p.horaFimNoturno, valor_noturno: p.valorNoturno ? Number(p.valorNoturno) : null,
+  escala: 'Migrada'
 });
 export const fromPostoDB = (d: any): Posto => ({
   id: d.id, prestadoraId: d.prestadora_id, nome: d.nome, faturamento: d.faturamento,
