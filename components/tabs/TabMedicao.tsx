@@ -216,7 +216,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
             <h3 className="text-base font-bold text-white mb-4 shrink-0">Valores a Pagar por Empresa (Prestadora)</h3>
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.chartData} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
+                <BarChart data={data.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorBruto" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#00f3ff" stopOpacity={0.9}/>
@@ -229,7 +229,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} opacity={0.5} />
                   <XAxis dataKey="nome" stroke="#475569" tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 600}} tickLine={false} axisLine={{stroke: '#334155'}} />
-                  <YAxis stroke="#475569" tick={{fill: '#94a3b8', fontSize: 10}} tickFormatter={(val) => `R$ ${val/1000}k`} tickLine={false} axisLine={false} />
+                  <YAxis width={65} stroke="#475569" tick={{fill: '#94a3b8', fontSize: 10}} tickFormatter={(val) => `R$ ${val/1000}k`} tickLine={false} axisLine={false} />
                   <RechartsTooltip 
                     cursor={{fill: 'rgba(0, 243, 255, 0.04)'}}
                     contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', borderColor: 'rgba(0, 243, 255, 0.2)', borderRadius: '12px', color: '#f1f5f9', backdropFilter: 'blur(10px)' }}
