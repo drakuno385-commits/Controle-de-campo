@@ -187,37 +187,39 @@ export default function GWEPEnterpriseApp() {
 
   const salvarPerfil = async (p: Perfil) => {
     if (p.id) {
+      // Atualiza perfil existente diretamente no banco
       const { nome, role, telas_permitidas } = p;
       const { error } = await supabase.from('perfis').update({ nome, role, telas_permitidas }).eq('id', p.id);
       if (!error) setPerfis(perfis.map(x => x.id === p.id ? { ...x, nome, role, telas_permitidas } : x));
       else alert("Erro ao atualizar: " + error.message);
     } else {
-      // Cria o usuário no Auth via API Route segura (service role no servidor)
+      // Cria usuário via API Route segura (auth + perfil em uma chamada)
       const res = await fetch('/api/admin/create-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create', email: p.email }),
+        body: JSON.stringify({ 
+          action: 'create', 
+          email: p.email,
+          nome: p.nome,
+          role: p.role,
+          telas_permitidas: p.telas_permitidas,
+        }),
       });
       const json = await res.json();
-      if (!res.ok) { alert('Erro ao criar usuário: ' + json.error); return; }
-
-      // Cria o perfil na tabela perfis
-      const novoPerfilDb = { nome: p.nome, email: p.email, role: p.role, telas_permitidas: p.telas_permitidas, must_change_password: true };
-      const { data, error } = await supabase.from('perfis').insert([novoPerfilDb]).select();
-      if (!error && data) setPerfis([...perfis, data[0]]);
-      else alert("Erro ao criar perfil: " + error?.message);
+      if (!res.ok) { alert('Erro ao criar usuário: ' + (json.error || 'Erro desconhecido')); return; }
+      // Adiciona o perfil retornado pela API à lista local
+      if (json.perfil) setPerfis([...perfis, json.perfil]);
     }
   };
 
   const deletarPerfil = async (id: string) => {
     if (confirm("Tem certeza que deseja excluir este usuário?")) {
-      // Busca o auth_id pelo perfil para deletar do Auth também
       const perfil = perfis.find(p => p.id === id);
       if (perfil) {
         await fetch('/api/admin/create-user', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'delete', userId: perfil.email }),
+          body: JSON.stringify({ action: 'delete', email: perfil.email }),
         });
       }
       const { error } = await supabase.from('perfis').delete().eq('id', id);
@@ -227,17 +229,13 @@ export default function GWEPEnterpriseApp() {
   };
 
   const resetarSenha = async (p: any) => {
-    // Busca o auth user pelo email para obter o UUID
     const res = await fetch('/api/admin/create-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'reset', userId: p.id }),
+      body: JSON.stringify({ action: 'reset', email: p.email }),
     });
     const json = await res.json();
-    if (!res.ok) { alert('Erro ao resetar senha: ' + json.error); return; }
-
-    // Marca must_change_password no perfil
-    await supabase.from('perfis').update({ must_change_password: true }).eq('id', p.id);
+    if (!res.ok) { alert('Erro ao resetar senha: ' + (json.error || 'Erro desconhecido')); return; }
     setPerfis(perfis.map(x => x.id === p.id ? { ...x, must_change_password: true } : x));
     alert(`Senha de ${p.nome || p.email} resetada para GWEP@123 com sucesso!`);
   };
