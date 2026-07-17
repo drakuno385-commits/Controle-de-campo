@@ -223,7 +223,7 @@ export default function GWEPEnterpriseApp() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[900px] h-[900px] bg-blue-600/20 blur-[180px] rounded-full pointer-events-none" />
 
         {/* SIDEBAR */}
-        <aside className="w-[300px] border-r border-white/5 bg-[#0A1120]/80 backdrop-blur-2xl flex flex-col z-20 shrink-0 shadow-2xl">
+        <aside className="w-[260px] border-r border-white/5 bg-[#080D18]/90 backdrop-blur-2xl flex flex-col z-20 shrink-0 shadow-2xl">
           <div className="p-8 flex items-center gap-4 border-b border-white/5">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)]">
               <Shield className="w-6 h-6 text-slate-950" />
@@ -277,15 +277,39 @@ export default function GWEPEnterpriseApp() {
         </aside>
 
         {/* MAIN CONTENT AREA */}
-        <main className="flex-1 p-6 lg:p-10 z-10 overflow-y-auto flex flex-col w-full h-full">
-          {activeTab === 'empresas' && canAccess('empresas') && <TabEmpresas prestadoras={prestadoras} onCreate={criarPrestadora} />}
-          {activeTab === 'postos' && canAccess('postos') && <TabPostos postos={postos} servicos={servicos} escalas={escalas} onSave={salvarPosto} />}
-          {activeTab === 'catalogos' && canAccess('catalogos') && <TabCatalogos servicos={servicos} escalas={escalas} onCreateServico={criarServico} onCreateEscala={criarEscala} />}
-          {activeTab === 'vinculos' && canAccess('vinculos') && <TabVinculos postos={postos} prestadoras={prestadoras} onVincular={handleVincular} isDragging={isDragging} setIsDragging={setIsDragging} />}
-          {activeTab === 'monitoramento' && canAccess('monitoramento') && <TabMonitoramento postos={postos} apontamentos={apontamentos} currentUser={currentUser} onTratarOcorrencia={tratarOcorrencia} />}
-          {activeTab === 'os' && canAccess('os') && <TabOS apontamentos={apontamentos} postos={postos} prestadoras={prestadoras} servicos={servicos} onSaveOS={salvarOS} />}
-          {activeTab === 'medicao' && canAccess('medicao') && <TabMedicao apontamentos={apontamentos} postos={postos} prestadoras={prestadoras} />}
-          {activeTab === 'usuarios' && canAccess('usuarios') && <TabUsuarios perfis={perfis} onSave={salvarPerfil} currentUser={currentUser} />}
+        <main className="flex-1 flex flex-col z-10 w-full h-full relative">
+          {/* TOP BAR */}
+          <header className="h-20 border-b border-white/5 bg-[#0A1120]/50 backdrop-blur-xl px-10 flex items-center justify-between shrink-0 shadow-sm z-30">
+            <div className="flex items-center gap-3">
+               <span className="text-slate-500 font-medium tracking-wide">Visão Geral</span>
+               <span className="text-slate-700">/</span>
+               <span className="text-cyan-400 font-bold capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col items-end">
+                <span className="text-sm font-bold text-slate-200">{currentUser?.email}</span>
+                <span className="text-[10px] text-cyan-500 font-bold uppercase tracking-widest">{currentUser?.role}</span>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 border-2 border-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.3)] flex items-center justify-center text-white font-bold text-sm">
+                {currentUser?.email.charAt(0).toUpperCase()}
+              </div>
+            </div>
+          </header>
+          
+          {/* CONTENT WRAPPER */}
+          <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+            <div className="bg-white/[0.01] border border-white/[0.03] rounded-[2rem] min-h-full p-8 shadow-2xl backdrop-blur-3xl relative overflow-hidden">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+              {activeTab === 'empresas' && canAccess('empresas') && <TabEmpresas prestadoras={prestadoras} onCreate={criarPrestadora} />}
+              {activeTab === 'postos' && canAccess('postos') && <TabPostos postos={postos} servicos={servicos} escalas={escalas} onSave={salvarPosto} />}
+              {activeTab === 'catalogos' && canAccess('catalogos') && <TabCatalogos servicos={servicos} escalas={escalas} onCreateServico={criarServico} onCreateEscala={criarEscala} />}
+              {activeTab === 'vinculos' && canAccess('vinculos') && <TabVinculos postos={postos} prestadoras={prestadoras} onVincular={handleVincular} isDragging={isDragging} setIsDragging={setIsDragging} />}
+              {activeTab === 'monitoramento' && canAccess('monitoramento') && <TabMonitoramento postos={postos} apontamentos={apontamentos} currentUser={currentUser} onTratarOcorrencia={tratarOcorrencia} />}
+              {activeTab === 'os' && canAccess('os') && <TabOS apontamentos={apontamentos} postos={postos} prestadoras={prestadoras} servicos={servicos} onSaveOS={salvarOS} />}
+              {activeTab === 'medicao' && canAccess('medicao') && <TabMedicao apontamentos={apontamentos} postos={postos} prestadoras={prestadoras} />}
+              {activeTab === 'usuarios' && canAccess('usuarios') && <TabUsuarios perfis={perfis} onSave={salvarPerfil} currentUser={currentUser} />}
+            </div>
+          </div>
         </main>
       </div>
     </>
