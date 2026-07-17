@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, MapPin, Clock, Plus, Link2, Unlink, Search, 
-  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase
+  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, ChevronRight, Briefcase
 } from 'lucide-react';
 import { Posto, Apontamento, Prestadora, Servico, Escala, Perfil } from '../../types';
 import { formatMoney } from '../../utils/formatters';
@@ -14,6 +14,7 @@ function ServerCrash(props: any) {
 export default function TabVinculos({ postos, prestadoras, onVincular, isDragging, setIsDragging }: any) {
   const [modalAcao, setModalAcao] = useState<{ postoId: string; empresaId: string | null; tipo: 'Vincular' | 'Desvincular' } | null>(null);
   const [dataAcao, setDataAcao] = useState(() => new Date().toISOString().substring(0, 10));
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   
   const [buscaPosto, setBuscaPosto] = useState("");
   const [buscaEmpresa, setBuscaEmpresa] = useState("");
@@ -60,16 +61,16 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
                 key={p.id} draggable 
                 onDragStart={(e) => { e.dataTransfer.setData("postoId", p.id); setIsDragging(true); }}
                 onDragEnd={() => setIsDragging(false)}
-                className="bg-white/[0.02] border border-white/5 rounded-2xl cursor-grab active:cursor-grabbing p-4 relative group flex flex-col gap-3 hover:bg-white/[0.04] hover:border-rose-500/30 transition-all overflow-hidden shadow-lg"
+                className="bg-white/[0.02] border border-white/5 rounded-xl cursor-grab active:cursor-grabbing px-3 py-2.5 relative group flex flex-col gap-1.5 hover:bg-white/[0.04] hover:border-rose-500/30 transition-all shadow-md"
               >
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/80 group-hover:bg-rose-400 transition-colors" />
-                <div className="flex items-center gap-3">
-                  <GripVertical className="w-5 h-5 text-slate-600 group-hover:text-rose-400 shrink-0 transition-colors" />
-                  <h3 className="text-sm font-bold text-slate-200 leading-tight flex-1">{p.nome}</h3>
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/80 group-hover:bg-rose-400 transition-colors rounded-l-xl" />
+                <div className="flex items-center gap-2">
+                  <GripVertical className="w-4 h-4 text-slate-600 group-hover:text-rose-400 shrink-0 transition-colors" />
+                  <h3 className="text-[11px] font-bold text-slate-200 leading-tight flex-1 truncate" title={p.nome}>{p.nome}</h3>
                 </div>
-                <div className="flex gap-2 pl-8 font-mono">
-                  {p.temDiurno && <span className="text-[10px] font-bold bg-cyan-950/30 text-cyan-400 px-2 py-1 rounded-md border border-cyan-500/20">R${p.valorDiurno} (D)</span>}
-                  {p.temNoturno && <span className="text-[10px] font-bold bg-blue-950/30 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20">R${p.valorNoturno} (N)</span>}
+                <div className="flex gap-1.5 pl-6 font-mono">
+                  {p.temDiurno && <span className="text-[8px] font-bold bg-cyan-950/30 text-cyan-400 px-1.5 py-0.5 rounded border border-cyan-500/20">R${p.valorDiurno} (D)</span>}
+                  {p.temNoturno && <span className="text-[8px] font-bold bg-blue-950/30 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20">R${p.valorNoturno} (N)</span>}
                 </div>
               </div>
             );
@@ -95,8 +96,8 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
           </div>
         </div>
 
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 overflow-y-auto pr-2 pb-6">
-          {empresasFiltradas.length === 0 && <p className="text-slate-500 col-span-full">Nenhuma empresa encontrada com este filtro.</p>}
+        <div className="flex-1 overflow-y-auto pr-2 pb-6 space-y-3">
+          {empresasFiltradas.length === 0 && <p className="text-slate-500">Nenhuma empresa encontrada com este filtro.</p>}
           {empresasFiltradas.map((prest: Prestadora) => {
           const vinculados = postos.filter((p: Posto) => 
             p.prestadoraId === prest.id && p.nome.toLowerCase().includes(buscaPosto.toLowerCase())
@@ -104,40 +105,48 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
           return (
             <div 
               key={prest.id}
-              onDragOver={e => e.preventDefault()}
+              onDragOver={e => { e.preventDefault(); setExpandedId(prest.id); }}
               onDrop={e => { e.preventDefault(); setIsDragging(false); const pId = e.dataTransfer.getData("postoId"); if(pId) setModalAcao({ postoId: pId, empresaId: prest.id, tipo: 'Vincular' }); }}
-              className={`bg-white/[0.02] backdrop-blur-2xl border-2 rounded-2xl p-5 transition-all duration-300 shadow-lg flex flex-col relative overflow-hidden group/board ${isDragging ? 'border-dashed border-cyan-500/50 animate-pulse bg-cyan-900/10 shadow-[0_0_30px_rgba(34,211,238,0.1)]' : 'border-white/5 hover:border-cyan-500/30'}`}
+              className={`bg-[#0A1120]/40 backdrop-blur-2xl border-2 rounded-xl transition-all duration-300 shadow-md flex flex-col relative overflow-hidden group/board ${isDragging ? 'border-dashed border-cyan-500/50 bg-cyan-900/10' : 'border-white/5 hover:border-cyan-500/30'}`}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-[50px] pointer-events-none group-hover/board:bg-cyan-500/10 transition-colors" />
-              <div className="flex justify-between items-start mb-5 pb-5 border-b border-white/5 relative z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#0A1120] border border-white/5 flex items-center justify-center shrink-0">
-                    <Building2 className="w-5 h-5 text-cyan-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-slate-100 truncate pr-2" title={prest.nome}>{prest.nome}</h3>
-                    <p className="text-[10px] font-mono text-slate-500 mt-1">{prest.cnpj}</p>
-                  </div>
-                </div>
-                <div className="bg-[#0A1120]/80 border border-white/10 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
-                  Vagas: <span className="text-cyan-400 ml-1">{vinculados.length}</span>
-                </div>
-              </div>
-              
-              <div className="space-y-3 flex-1 relative z-10">
-                {vinculados.length === 0 && <div className="h-full min-h-[100px] flex items-center justify-center border-2 border-dashed border-white/5 rounded-xl"><p className="text-xs text-slate-600 font-medium">Arraste os postos para cá</p></div>}
-                {vinculados.map((p: Posto) => (
-                  <div key={p.id} className="bg-[#0A1120]/60 border border-white/5 p-3 rounded-xl flex justify-between items-center group/card hover:bg-white/[0.04] transition-colors shadow-sm relative overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500/50" />
-                    <div className="pl-3 truncate pr-2">
-                      <h4 className="text-xs font-bold text-slate-200 truncate" title={p.nome}>{p.nome}</h4>
+              <div 
+                className="flex items-center justify-between p-3.5 cursor-pointer hover:bg-white/[0.02] transition-colors relative z-10"
+                onClick={() => setExpandedId(expandedId === prest.id ? null : prest.id)}
+              >
+                 <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-lg bg-[#0A1120] border border-white/5 flex items-center justify-center shrink-0 group-hover/board:border-cyan-500/30 group-hover/board:text-cyan-400 transition-colors">
+                      <Building2 className="w-4 h-4 text-cyan-500" />
                     </div>
-                    <button onClick={() => setModalAcao({ postoId: p.id, empresaId: null, tipo: 'Desvincular' })} className="opacity-0 group-hover/card:opacity-100 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 p-1.5 rounded-md transition-all shrink-0" title="Desvincular (Remover)">
-                      <Unlink className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-100">{prest.nome}</h3>
+                      <p className="text-[10px] font-mono text-slate-500">{prest.cnpj}</p>
+                    </div>
+                 </div>
+                 <div className="flex items-center gap-4">
+                    <div className="bg-[#0A1120]/80 border border-white/10 px-2.5 py-1 rounded-md text-[10px] font-bold text-slate-400 flex items-center">
+                      Vagas vinculadas: <span className="text-cyan-400 ml-1">{vinculados.length}</span>
+                    </div>
+                    {expandedId === prest.id ? <ChevronDown className="w-4 h-4 text-slate-500" /> : <ChevronRight className="w-4 h-4 text-slate-500" />}
+                 </div>
               </div>
+
+              {expandedId === prest.id && (
+                <div className="border-t border-white/5 bg-black/20 p-4 space-y-2 relative z-10">
+                  {vinculados.length === 0 && <div className="h-16 flex items-center justify-center border-2 border-dashed border-white/5 rounded-lg"><p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Arraste os postos para cá</p></div>}
+                  {vinculados.map((p: Posto) => (
+                    <div key={p.id} className="bg-[#0A1120]/60 border border-white/5 px-3 py-2 rounded-lg flex justify-between items-center group/card hover:bg-white/[0.04] transition-colors shadow-sm relative overflow-hidden">
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500/50 rounded-l-lg" />
+                      <div className="pl-2 truncate pr-2 flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-cyan-500/50" />
+                        <h4 className="text-[11px] font-bold text-slate-200 truncate" title={p.nome}>{p.nome}</h4>
+                      </div>
+                      <button onClick={() => setModalAcao({ postoId: p.id, empresaId: null, tipo: 'Desvincular' })} className="opacity-0 group-hover/card:opacity-100 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 p-1.5 rounded-md transition-all shrink-0" title="Desvincular (Remover)">
+                        <Unlink className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
