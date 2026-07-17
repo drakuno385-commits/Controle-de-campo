@@ -252,7 +252,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
 
           <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={kpis.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+              <BarChart data={kpis.chartData} margin={{ top: 10, right: 30, left: 20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorDevido" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#00f3ff" stopOpacity={0.8}/>
@@ -265,7 +265,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} opacity={0.4} />
                 <XAxis dataKey="name" stroke="#475569" tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 'bold'}} tickLine={false} axisLine={{stroke: '#1e293b'}} />
-                <YAxis width={65} stroke="#475569" tick={{fill: '#94a3b8', fontSize: 10}} tickFormatter={(val) => `R$ ${val/1000}k`} tickLine={false} axisLine={false} />
+                <YAxis width={90} stroke="#475569" tick={{fill: '#94a3b8', fontSize: 10}} tickFormatter={(val) => `R$ ${(val/1000).toFixed(0)}k`} tickLine={false} axisLine={false} />
                 <RechartsTooltip 
                   cursor={{fill: 'rgba(0, 243, 255, 0.03)'}}
                   contentStyle={{ backgroundColor: 'rgba(10, 17, 32, 0.9)', borderColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '12px', color: '#f1f5f9', backdropFilter: 'blur(10px)' }}
