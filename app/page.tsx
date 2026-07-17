@@ -11,17 +11,17 @@ import { Posto, Apontamento, Prestadora, Servico, Escala, Perfil, StatusOS } fro
 import { toPostoDB, fromPostoDB, toApontDB, fromApontDB } from '@/utils/mappers';
 import { formatMoney } from '@/utils/formatters';
 
-import SidebarBtn from '../components/ui/SidebarBtn';
-import CommandPalette from '../components/ui/CommandPalette';
+import SidebarBtn from '@/components/ui/SidebarBtn';
+import CommandPalette from '@/components/ui/CommandPalette';
 import TabCatalogos from '@/components/tabs/TabCatalogos';
 import TabEmpresas from '@/components/tabs/TabEmpresas';
 import TabPostos from '@/components/tabs/TabPostos';
 import TabVinculos from '@/components/tabs/TabVinculos';
 import TabOS from '@/components/tabs/TabOS';
-import TabMedicao from '../components/tabs/TabMedicao';
+import TabMedicao from '@/components/tabs/TabMedicao';
 import TabMonitoramento from '@/components/tabs/TabMonitoramento';
-import TabUsuarios from '../components/tabs/TabUsuarios';
-import TabVisaoGeral from '../components/tabs/TabVisaoGeral';
+import TabUsuarios from '@/components/tabs/TabUsuarios';
+import TabVisaoGeral from '@/components/tabs/TabVisaoGeral';
 
 export default function GWEPEnterpriseApp() {
   const router = useRouter();
