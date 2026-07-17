@@ -25,7 +25,7 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
   
   return (
     <div className="flex flex-col xl:flex-row gap-8 h-full min-h-[700px] fade-in">
-      <div className="w-full xl:w-[420px] shrink-0 bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+      <div className="w-full xl:w-[380px] shrink-0 bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-2xl flex flex-col h-[calc(100vh-100px)]">
         <div className="p-6 border-b border-white/5 bg-slate-950/40">
           <h2 className="text-base font-bold text-slate-100 uppercase tracking-widest flex items-center gap-3">
             <ServerCrash className="w-5 h-5 text-rose-400" /> Pendências ({semVinculo.length})
@@ -40,7 +40,7 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
                 key={p.id} draggable 
                 onDragStart={(e) => { e.dataTransfer.setData("postoId", p.id); setIsDragging(true); }}
                 onDragEnd={() => setIsDragging(false)}
-                className="bg-slate-950/80 border border-slate-800 rounded-2xl cursor-grab active:cursor-grabbing p-5 relative group flex items-center gap-4 border-l-[4px] border-l-rose-500/80 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:border-slate-700 transition-all"
+                className="bg-[#0A1120]/80 border border-white/5 rounded-2xl cursor-grab active:cursor-grabbing p-5 relative group flex items-center gap-4 border-l-[4px] border-l-rose-500/80 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:border-white/10 transition-all"
               >
                 <GripVertical className="w-6 h-6 text-slate-600 group-hover:text-cyan-500 shrink-0 transition-colors" />
                 <div className="flex-1">
@@ -64,7 +64,7 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
               key={prest.id}
               onDragOver={e => e.preventDefault()}
               onDrop={e => { e.preventDefault(); setIsDragging(false); const pId = e.dataTransfer.getData("postoId"); if(pId) setModalAcao({ postoId: pId, empresaId: prest.id, tipo: 'Vincular' }); }}
-              className={`bg-slate-900/50 backdrop-blur-md border-2 rounded-3xl p-6 transition-all duration-300 shadow-xl flex flex-col ${isDragging ? 'border-dashed border-cyan-500/50 animate-pulse bg-cyan-950/20 shadow-[0_0_30px_rgba(0,243,255,0.1)]' : 'border-slate-800/80 hover:border-slate-700 hover:-translate-y-1'}`}
+              className={`bg-white/[0.02] backdrop-blur-2xl border-2 rounded-3xl p-6 transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex flex-col ${isDragging ? 'border-dashed border-cyan-500/50 animate-pulse bg-cyan-950/20 shadow-[0_0_30px_rgba(0,243,255,0.1)]' : 'border-white/5 hover:border-white/10 hover:-translate-y-1'}`}
             >
               <div className="flex justify-between items-start mb-6 pb-6 border-b border-white/5">
                 <div>
@@ -80,7 +80,7 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
               <div className="space-y-4 flex-1">
                 {vinculados.length === 0 && <p className="text-sm text-slate-600 text-center py-12">Arraste cartões para cá.</p>}
                 {vinculados.map((p: Posto) => (
-                  <div key={p.id} className="bg-slate-950/50 border border-slate-800/50 p-4 rounded-2xl flex justify-between items-center group hover:bg-slate-900 transition-colors shadow-sm">
+                  <div key={p.id} className="bg-[#0A1120]/50 border border-white/5 p-4 rounded-2xl flex justify-between items-center group hover:bg-white/5 transition-colors shadow-sm">
                     <div>
                       <h4 className="text-sm font-bold text-slate-200">{p.nome}</h4>
                     </div>

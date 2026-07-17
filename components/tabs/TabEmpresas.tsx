@@ -17,7 +17,7 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
 
   return (
     <div className="flex flex-col xl:flex-row gap-8 h-full fade-in">
-      <div className="w-full xl:w-[480px] shrink-0 bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-3xl p-8 shadow-2xl h-fit">
+      <div className="w-full xl:w-[480px] shrink-0 bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl h-fit">
         <h2 className="text-2xl font-bold text-slate-100 mb-8 tracking-tight flex items-center gap-3">
           <Plus className="w-6 h-6 text-cyan-400" /> Nova Empresa
         </h2>
@@ -46,7 +46,7 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-6">
           {prestadoras.length === 0 && <p className="text-slate-500 col-span-full">Nenhuma prestadora cadastrada.</p>}
           {prestadoras.map((p: Prestadora) => (
-            <div key={p.id} className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 hover:border-cyan-500/30 hover:bg-slate-900/70 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md group shadow-xl">
+            <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] hover:-translate-y-1 transition-all duration-300 backdrop-blur-2xl group shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
               <div className="w-14 h-14 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center mb-5 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
                 <Building2 className="w-7 h-7 text-cyan-500" />
               </div>

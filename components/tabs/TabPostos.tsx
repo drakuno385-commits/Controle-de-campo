@@ -110,7 +110,7 @@ export default function TabPostos({ postos, servicos, escalas, onSave }: any) {
           {postos.map((p: Posto) => {
             const esc = escalas.find((e:any) => e.id === p.escalaId)?.nome || 'Sem Escala';
             return (
-              <div key={p.id} className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700 hover:bg-slate-900/70 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md shadow-xl flex flex-col">
+              <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] hover:-translate-y-1 transition-all duration-300 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex flex-col relative overflow-hidden group">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-slate-100 font-bold tracking-tight text-base leading-tight flex-1 pr-2">
                     <span className="text-slate-500 text-xs mr-2 font-mono">#{p.codigoSequencial || '---'}</span>

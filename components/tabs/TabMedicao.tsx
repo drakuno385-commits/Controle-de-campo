@@ -133,7 +133,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
 
       {/* KPIs Rápidos */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl relative overflow-hidden group">
+        <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl relative overflow-hidden group shadow-lg backdrop-blur-md">
           <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform group-hover:scale-150" />
           <div className="flex items-start justify-between relative z-10">
             <div>
@@ -146,7 +146,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl relative overflow-hidden group">
+        <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl relative overflow-hidden group shadow-lg backdrop-blur-md">
           <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform group-hover:scale-150" />
           <div className="flex items-start justify-between relative z-10">
             <div>
@@ -160,7 +160,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl relative overflow-hidden group">
+        <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl relative overflow-hidden group shadow-lg backdrop-blur-md">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform group-hover:scale-150" />
           <div className="flex items-start justify-between relative z-10">
             <div>
@@ -176,7 +176,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Gráfico de Barras: Valores a pagar por Empresa */}
-        <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl">
+        <div className="lg:col-span-2 bg-white/[0.02] border border-white/5 p-6 rounded-3xl shadow-lg backdrop-blur-md">
           <h3 className="text-lg font-bold text-white mb-6">Valores a Pagar por Empresa (Prestadora)</h3>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -210,7 +210,7 @@ export default function TabMedicao({ apontamentos, prestadoras, postos }: TabMed
         </div>
 
         {/* Gráfico de Pizza: Ocorrências / Assiduidade */}
-        <div className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl">
+        <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl shadow-lg backdrop-blur-md">
           <h3 className="text-lg font-bold text-white mb-6">Assiduidade Geral</h3>
           <div className="h-64 relative">
             {data.totalTurnos === 0 ? (

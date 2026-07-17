@@ -217,16 +217,16 @@ export default function GWEPEnterpriseApp() {
         ::-webkit-scrollbar-thumb { background: rgba(30, 41, 59, 0.8); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.3); }
       `}} />
-      <div className="flex h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden relative">
+      <div className="flex h-screen bg-[#050B14] text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden relative">
         {/* GLOBAL BACKLIGHT EFFECTS */}
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[900px] h-[900px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
+        <div className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-cyan-500/20 blur-[180px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[900px] h-[900px] bg-blue-600/20 blur-[180px] rounded-full pointer-events-none" />
 
         {/* SIDEBAR */}
-        <aside className="w-[300px] border-r border-slate-800/80 bg-slate-900/60 backdrop-blur-xl flex flex-col z-20 shrink-0 shadow-2xl">
+        <aside className="w-[300px] border-r border-white/5 bg-[#0A1120]/80 backdrop-blur-2xl flex flex-col z-20 shrink-0 shadow-2xl">
           <div className="p-8 flex items-center gap-4 border-b border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.3)]">
-              <Shield className="w-6 h-6 text-slate-900" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+              <Shield className="w-6 h-6 text-slate-950" />
             </div>
             <h1 className="text-3xl font-black text-slate-100 tracking-tight leading-none">GWEP<br/><span className="text-cyan-400 font-light text-base tracking-widest uppercase mt-1 block">FieldControl</span></h1>
           </div>
@@ -236,7 +236,7 @@ export default function GWEPEnterpriseApp() {
             
             {showGestao && (
               <div className="mb-2 mt-2">
-                <button onClick={()=>setGestaoAberto(!gestaoAberto)} className="w-full flex justify-between items-center px-4 py-3 text-sm font-bold text-slate-500 hover:text-slate-300 uppercase tracking-widest transition-colors rounded-xl hover:bg-slate-800/40 group">
+                <button onClick={()=>setGestaoAberto(!gestaoAberto)} className="w-full flex justify-between items-center px-4 py-3 text-sm font-bold text-slate-500 hover:text-cyan-400 uppercase tracking-widest transition-all rounded-xl hover:bg-white/5 group">
                   <span className="flex items-center gap-3">
                     <Briefcase className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 transition-colors" />
                     Gestão Operacional
@@ -245,7 +245,7 @@ export default function GWEPEnterpriseApp() {
                 </button>
                 
                 {gestaoAberto && (
-                  <div className="pl-4 space-y-2 border-l-2 border-slate-800/50 ml-6 mt-2">
+                  <div className="pl-4 space-y-2 border-l border-white/10 ml-6 mt-2">
                     {canAccess('postos') && <SidebarBtn active={activeTab==='postos'} onClick={()=>setActiveTab('postos')} icon={<MapPin />} label="Postos de Serviço" small />}
                     {canAccess('catalogos') && <SidebarBtn active={activeTab==='catalogos'} onClick={()=>setActiveTab('catalogos')} icon={<Clock />} label="Jornada - Escala" small />}
                     {canAccess('vinculos') && <SidebarBtn active={activeTab==='vinculos'} onClick={()=>setActiveTab('vinculos')} icon={<Link2 />} label="Vínculos Operacionais" small />}
