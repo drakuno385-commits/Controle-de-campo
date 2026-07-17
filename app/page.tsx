@@ -11,19 +11,19 @@ import { Posto, Apontamento, Prestadora, Servico, Escala, Perfil, StatusOS } fro
 import { toPostoDB, fromPostoDB, toApontDB, fromApontDB } from '@/utils/mappers';
 import { formatMoney } from '@/utils/formatters';
 
-import SidebarBtn from '@/components/ui/SidebarBtn';
+import SidebarBtn from '../components/ui/SidebarBtn';
 import TabCatalogos from '@/components/tabs/TabCatalogos';
 import TabEmpresas from '@/components/tabs/TabEmpresas';
 import TabPostos from '@/components/tabs/TabPostos';
 import TabVinculos from '@/components/tabs/TabVinculos';
 import TabOS from '@/components/tabs/TabOS';
-import TabMedicao from '@/components/tabs/TabMedicao';
+import TabMedicao from '../components/tabs/TabMedicao';
 import TabMonitoramento from '@/components/tabs/TabMonitoramento';
-import TabUsuarios from '@/components/tabs/TabUsuarios';
+import TabUsuarios from '../components/tabs/TabUsuarios';
+import TabVisaoGeral from '../components/tabs/TabVisaoGeral';
 
 export default function GWEPEnterpriseApp() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'empresas' | 'postos' | 'vinculos' | 'os' | 'medicao' | 'catalogos' | 'usuarios' | 'monitoramento'>('empresas');
   
   const [prestadoras, setPrestadoras] = useState<Prestadora[]>([]);
   const [postos, setPostos] = useState<Posto[]>([]);
@@ -34,6 +34,7 @@ export default function GWEPEnterpriseApp() {
   
   const [currentUser, setCurrentUser] = useState<Perfil | null>(null);
   const [gestaoAberto, setGestaoAberto] = useState(true);
+  const [activeTab, setActiveTab] = useState('visao-geral');
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -235,6 +236,7 @@ export default function GWEPEnterpriseApp() {
           </div>
           
           <nav className="flex-1 p-5 space-y-3 overflow-y-auto">
+            <SidebarBtn active={activeTab==='visao-geral'} onClick={()=>setActiveTab('visao-geral')} icon={<LayoutDashboard />} label="Visão Geral" />
             {canAccess('empresas') && <SidebarBtn active={activeTab==='empresas'} onClick={()=>setActiveTab('empresas')} icon={<Building2 />} label="Empresas" />}
             
             {showGestao && (
@@ -302,6 +304,7 @@ export default function GWEPEnterpriseApp() {
           {/* CONTENT WRAPPER */}
           <div className="flex-1 p-6 lg:p-10 overflow-y-auto">
             <div className="w-full h-full flex flex-col">
+              {activeTab === 'visao-geral' && <TabVisaoGeral prestadoras={prestadoras} postos={postos} apontamentos={apontamentos} onNavigate={setActiveTab} />}
               {activeTab === 'empresas' && canAccess('empresas') && <TabEmpresas prestadoras={prestadoras} onCreate={criarPrestadora} />}
               {activeTab === 'postos' && canAccess('postos') && <TabPostos postos={postos} servicos={servicos} escalas={escalas} onSave={salvarPosto} />}
               {activeTab === 'catalogos' && canAccess('catalogos') && <TabCatalogos servicos={servicos} escalas={escalas} onCreateServico={criarServico} onCreateEscala={criarEscala} />}
