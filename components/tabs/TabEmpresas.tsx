@@ -26,17 +26,17 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
             <label className="text-sm font-semibold text-slate-400 block mb-2">Razão Social / Nome Fantasia</label>
             <div className="relative group">
               <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
-              <input required type="text" value={nova.nome} onChange={e=>setNova({...nova, nome: e.target.value})} placeholder="Ex: GWEP Segurança" className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-12 pr-4 py-4 text-base text-slate-200 focus:border-cyan-400/50 focus:bg-slate-950/80 outline-none transition-all" />
+              <input required type="text" value={nova.nome} onChange={e=>setNova({...nova, nome: e.target.value})} placeholder="Ex: GWEP Segurança" className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-base text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all" />
             </div>
           </div>
           <div>
             <label className="text-sm font-semibold text-slate-400 block mb-2">CNPJ</label>
             <div className="relative group">
               <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
-              <input required type="text" value={nova.cnpj} onChange={e=>setNova({...nova, cnpj: e.target.value})} placeholder="00.000.000/0001-00" className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-12 pr-4 py-4 text-base font-mono text-slate-200 focus:border-cyan-400/50 focus:bg-slate-950/80 outline-none transition-all" />
+              <input required type="text" value={nova.cnpj} onChange={e=>setNova({...nova, cnpj: e.target.value})} placeholder="00.000.000/0001-00" className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-base font-mono text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all" />
             </div>
           </div>
-          <button type="submit" className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 active:translate-y-0 transition-all">
+          <button type="submit" className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-4 rounded-2xl text-lg shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] hover:-translate-y-0.5 active:translate-y-0 transition-all">
             Cadastrar Empresa
           </button>
         </form>
@@ -47,8 +47,8 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
           {prestadoras.length === 0 && <p className="text-slate-500 col-span-full">Nenhuma prestadora cadastrada.</p>}
           {prestadoras.map((p: Prestadora) => (
             <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] hover:-translate-y-1 transition-all duration-300 backdrop-blur-2xl group shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-              <div className="w-14 h-14 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center mb-5 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
-                <Building2 className="w-7 h-7 text-cyan-500" />
+              <div className="w-12 h-12 bg-[#0A1120]/60 border border-white/5 rounded-xl flex items-center justify-center mb-5 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
+                <Building2 className="w-6 h-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
               </div>
               <h3 className="text-slate-100 font-bold tracking-tight text-xl mb-1">{p.nome}</h3>
               <p className="text-sm font-mono text-slate-500">{p.cnpj}</p>
