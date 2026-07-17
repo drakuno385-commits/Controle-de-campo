@@ -59,10 +59,14 @@ export default function GWEPEnterpriseApp() {
       } else {
         const { data: profile } = await supabase.from('perfis').select('*').eq('email', session.user.email).single();
         if (profile) {
+          if (profile.must_change_password) {
+            router.push('/trocar-senha');
+            return;
+          }
           setCurrentUser(profile);
         } else {
           // Fallback provisório para evitar tela branca caso a tabela ainda não exista ou não tenha o perfil
-          setCurrentUser({ email: session.user.email || '', role: 'MASTER', telas_permitidas: ['empresas', 'postos', 'catalogos', 'vinculos', 'os', 'medicao', 'usuarios', 'monitoramento'] });
+          setCurrentUser({ nome: 'Administrador', email: session.user.email || '', role: 'MASTER', telas_permitidas: ['empresas', 'postos', 'catalogos', 'vinculos', 'os', 'medicao', 'usuarios', 'monitoramento'] });
         }
         loadData();
       }
@@ -183,14 +187,59 @@ export default function GWEPEnterpriseApp() {
 
   const salvarPerfil = async (p: Perfil) => {
     if (p.id) {
-      const { error } = await supabase.from('perfis').update(p).eq('id', p.id);
-      if (!error) setPerfis(perfis.map(x => x.id === p.id ? p : x));
+      const { nome, role, telas_permitidas } = p;
+      const { error } = await supabase.from('perfis').update({ nome, role, telas_permitidas }).eq('id', p.id);
+      if (!error) setPerfis(perfis.map(x => x.id === p.id ? { ...x, nome, role, telas_permitidas } : x));
       else alert("Erro ao atualizar: " + error.message);
     } else {
-      const { data, error } = await supabase.from('perfis').insert([p]).select();
+      // Cria o usuário no Auth via API Route segura (service role no servidor)
+      const res = await fetch('/api/admin/create-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create', email: p.email }),
+      });
+      const json = await res.json();
+      if (!res.ok) { alert('Erro ao criar usuário: ' + json.error); return; }
+
+      // Cria o perfil na tabela perfis
+      const novoPerfilDb = { nome: p.nome, email: p.email, role: p.role, telas_permitidas: p.telas_permitidas, must_change_password: true };
+      const { data, error } = await supabase.from('perfis').insert([novoPerfilDb]).select();
       if (!error && data) setPerfis([...perfis, data[0]]);
-      else alert("Erro ao criar perfil: " + error.message);
+      else alert("Erro ao criar perfil: " + error?.message);
     }
+  };
+
+  const deletarPerfil = async (id: string) => {
+    if (confirm("Tem certeza que deseja excluir este usuário?")) {
+      // Busca o auth_id pelo perfil para deletar do Auth também
+      const perfil = perfis.find(p => p.id === id);
+      if (perfil) {
+        await fetch('/api/admin/create-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', userId: perfil.email }),
+        });
+      }
+      const { error } = await supabase.from('perfis').delete().eq('id', id);
+      if (!error) setPerfis(perfis.filter(p => p.id !== id));
+      else alert('Erro ao excluir: ' + error.message);
+    }
+  };
+
+  const resetarSenha = async (p: any) => {
+    // Busca o auth user pelo email para obter o UUID
+    const res = await fetch('/api/admin/create-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'reset', userId: p.id }),
+    });
+    const json = await res.json();
+    if (!res.ok) { alert('Erro ao resetar senha: ' + json.error); return; }
+
+    // Marca must_change_password no perfil
+    await supabase.from('perfis').update({ must_change_password: true }).eq('id', p.id);
+    setPerfis(perfis.map(x => x.id === p.id ? { ...x, must_change_password: true } : x));
+    alert(`Senha de ${p.nome || p.email} resetada para GWEP@123 com sucesso!`);
   };
 
   const criarEscala = async (nome: string, cargaHoraria: number) => {
@@ -358,7 +407,7 @@ export default function GWEPEnterpriseApp() {
               {activeTab === 'monitoramento' && canAccess('monitoramento') && <TabMonitoramento postos={postos} apontamentos={apontamentos} currentUser={currentUser} onTratarOcorrencia={tratarOcorrencia} />}
               {activeTab === 'os' && canAccess('os') && <TabOS apontamentos={apontamentos} postos={postos} prestadoras={prestadoras} servicos={servicos} onSaveOS={salvarOS} />}
               {activeTab === 'medicao' && canAccess('medicao') && <TabMedicao apontamentos={apontamentos} postos={postos} prestadoras={prestadoras} />}
-              {activeTab === 'usuarios' && canAccess('usuarios') && <TabUsuarios perfis={perfis} onSave={salvarPerfil} currentUser={currentUser} />}
+              {activeTab === 'usuarios' && canAccess('usuarios') && <TabUsuarios perfis={perfis} onSave={salvarPerfil} onDelete={deletarPerfil} onResetSenha={resetarSenha} currentUser={currentUser} />}
             </div>
           </div>
 

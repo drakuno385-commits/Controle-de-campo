@@ -33,7 +33,9 @@ export interface HistoricoVinculo {
 
 export interface Perfil {
   id?: string;
+  nome: string;
   email: string;
   role: 'MASTER' | 'OPERADOR';
   telas_permitidas: string[];
+  must_change_password?: boolean;
 }
