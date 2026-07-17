@@ -34,7 +34,7 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
 
       {/* MAIN GRID FULL WIDTH */}
       <div className="flex-1 overflow-y-auto pr-2 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
           {prestadoras.length === 0 && (
             <div className="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
               <Building2 className="w-12 h-12 text-slate-600 mb-4" />
@@ -43,16 +43,17 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
             </div>
           )}
           {prestadoras.map((p: Prestadora) => (
-            <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all duration-300 backdrop-blur-2xl group shadow-lg relative">
-              <button className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 text-slate-500 hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-all">
+            <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all duration-300 backdrop-blur-2xl group shadow-lg relative flex items-center gap-4">
+              <div className="w-10 h-10 bg-[#0A1120]/60 border border-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
+                <Building2 className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-slate-100 font-bold tracking-tight text-sm mb-0.5 truncate pr-6" title={p.nome}>{p.nome}</h3>
+                <p className="text-[10px] font-mono text-slate-500">{p.cnpj}</p>
+              </div>
+              <button className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 rounded-lg hover:bg-white/10 text-slate-500 hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-all">
                 <MoreVertical className="w-4 h-4" />
               </button>
-              
-              <div className="w-12 h-12 bg-[#0A1120]/60 border border-white/5 rounded-xl flex items-center justify-center mb-5 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
-                <Building2 className="w-6 h-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
-              </div>
-              <h3 className="text-slate-100 font-bold tracking-tight text-lg mb-1 truncate pr-6">{p.nome}</h3>
-              <p className="text-sm font-mono text-slate-500">{p.cnpj}</p>
             </div>
           ))}
         </div>

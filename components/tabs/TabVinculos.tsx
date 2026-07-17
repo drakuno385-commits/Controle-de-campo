@@ -38,16 +38,16 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
       <div className="w-full xl:w-[400px] shrink-0 bg-[#0A1120]/40 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-2xl flex flex-col h-[calc(100vh-100px)]">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-slate-100 flex items-center gap-3">
-            <ServerCrash className="w-5 h-5 text-rose-400" /> Pendentes ({semVinculo.length})
+            <ServerCrash className="w-5 h-5 text-rose-400" /> Postos ({semVinculo.length} Pendentes)
           </h2>
-          <p className="text-sm text-slate-500 mt-1 mb-4">Arraste os postos abaixo para vinculá-los a uma empresa.</p>
+          <p className="text-sm text-slate-500 mt-1 mb-4">Arraste os postos para vinculá-los ou busque por nome.</p>
           <div className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-rose-400 transition-colors" />
             <input 
               type="text" 
               value={buscaPosto} 
               onChange={e => setBuscaPosto(e.target.value)} 
-              placeholder="Buscar posto pendente..." 
+              placeholder="Buscar posto (pendente ou vinculado)..." 
               className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-200 focus:border-rose-500/50 outline-none transition-colors"
             />
           </div>
@@ -98,7 +98,9 @@ export default function TabVinculos({ postos, prestadoras, onVincular, isDraggin
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 overflow-y-auto pr-2 pb-6">
           {empresasFiltradas.length === 0 && <p className="text-slate-500 col-span-full">Nenhuma empresa encontrada com este filtro.</p>}
           {empresasFiltradas.map((prest: Prestadora) => {
-          const vinculados = postos.filter((p: Posto) => p.prestadoraId === prest.id);
+          const vinculados = postos.filter((p: Posto) => 
+            p.prestadoraId === prest.id && p.nome.toLowerCase().includes(buscaPosto.toLowerCase())
+          );
           return (
             <div 
               key={prest.id}

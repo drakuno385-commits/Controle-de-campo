@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Users, CheckCircle2, Plus, X, ChevronRight, Shield
+  Users, CheckCircle2, Plus, X, ChevronRight, Shield, ChevronDown
 } from 'lucide-react';
 import { Perfil } from '../../types';
 
