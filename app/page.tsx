@@ -232,7 +232,7 @@ export default function GWEPEnterpriseApp() {
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)] shrink-0">
               <Shield className="w-5 h-5 text-slate-950" />
             </div>
-            <h1 className="text-xl font-black text-slate-100 tracking-tight leading-none truncate">GWEP<br/><span className="text-cyan-400 font-light text-[10px] tracking-widest uppercase mt-0.5 block">FieldControl</span></h1>
+            <h1 className="text-xl font-black text-slate-100 tracking-tight leading-none truncate">GWEP<br/><span className="text-cyan-400 font-light text-xs tracking-widest uppercase mt-0.5 block">FieldControl</span></h1>
           </div>
           
           <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -293,7 +293,7 @@ export default function GWEPEnterpriseApp() {
             <div className="flex items-center gap-4">
               <div className="flex flex-col items-end">
                 <span className="text-sm font-bold text-slate-200">{currentUser?.email}</span>
-                <span className="text-[10px] text-cyan-500 font-bold uppercase tracking-widest">{currentUser?.role}</span>
+                <span className="text-xs text-cyan-500 font-bold uppercase tracking-widest">{currentUser?.role}</span>
               </div>
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 border-2 border-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.3)] flex items-center justify-center text-white font-bold text-sm">
                 {currentUser?.email.charAt(0).toUpperCase()}
