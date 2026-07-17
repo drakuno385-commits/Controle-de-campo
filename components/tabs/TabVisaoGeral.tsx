@@ -15,20 +15,58 @@ interface Props {
 
 export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNavigate }: Props) {
   
-  // Resumos Calculados
+  // Calculation of KPIs and Chart Data
+  const kpis = useMemo(() => {
+    let devido = 0;
+    let descontos = 0;
+    let liquido = 0;
+    
+    // Group by month
+    const monthsData: Record<string, { liquido: number, devido: number }> = {};
+    const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    
+    // Initialize last 6 months
+    const d = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const m = new Date(d.getFullYear(), d.getMonth() - i, 1);
+      monthsData[`${m.getFullYear()}-${m.getMonth()}`] = { liquido: 0, devido: 0 };
+    }
+
+    apontamentos.forEach(a => {
+      if (a.status !== 'Em Andamento') {
+         const dev = a.valorOriginal || 0;
+         const desc = a.descontoCalculado || 0;
+         const liq = a.valorFaturado || (dev - desc);
+         
+         devido += dev;
+         descontos += desc;
+         liquido += liq;
+
+         if (a.checkIn) {
+           const date = new Date(a.checkIn);
+           const key = `${date.getFullYear()}-${date.getMonth()}`;
+           if (monthsData[key]) {
+              monthsData[key].devido += dev;
+              monthsData[key].liquido += liq;
+           }
+         }
+      }
+    });
+
+    const chartData = Object.keys(monthsData).map(k => {
+      const [, m] = k.split('-');
+      return {
+        name: monthNames[parseInt(m)],
+        liquido: monthsData[k].liquido,
+        devido: monthsData[k].devido
+      };
+    });
+
+    return { devido, descontos, liquido, chartData };
+  }, [apontamentos]);
+
   const pendentesVinculo = postos.filter(p => !p.prestadoraId);
   const empresasAtivas = prestadoras.slice(0, 3);
-  
-  // Fake chart data (or calculated from apontamentos)
-  // For the sake of the blueprint, we will mock a beautiful trend.
-  const chartData = [
-    { name: 'Jan', liquido: 120, devido: 145 },
-    { name: 'Fev', liquido: 130, devido: 160 },
-    { name: 'Mar', liquido: 110, devido: 140 },
-    { name: 'Abr', liquido: 145, devido: 180 },
-    { name: 'Mai', liquido: 160, devido: 190 },
-    { name: 'Jun', liquido: 155, devido: 185 },
-  ];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full auto-rows-min pb-6">
@@ -113,19 +151,19 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
           <div className="relative bg-[#0A1120]/60 p-4 rounded-2xl border border-white/5 overflow-hidden group/kpi">
             <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/20 blur-[20px] -mr-4 -mt-4 transition-transform group-hover/kpi:scale-150" />
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Devido (Bruto)</p>
-            <h4 className="text-xl font-black text-white relative z-10">R$ 263.980,00</h4>
+            <h4 className="text-xl font-black text-white relative z-10">{formatMoney(kpis.devido)}</h4>
           </div>
 
           <div className="relative bg-[#0A1120]/60 p-4 rounded-2xl border border-white/5 overflow-hidden group/kpi">
             <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/20 blur-[20px] -mr-4 -mt-4 transition-transform group-hover/kpi:scale-150" />
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Descontos</p>
-            <h4 className="text-xl font-black text-rose-400 relative z-10">R$ 13.500,00</h4>
+            <h4 className="text-xl font-black text-rose-400 relative z-10">{formatMoney(kpis.descontos)}</h4>
           </div>
 
           <div className="relative bg-[#0A1120]/60 p-4 rounded-2xl border border-white/5 overflow-hidden group/kpi">
             <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/20 blur-[20px] -mr-4 -mt-4 transition-transform group-hover/kpi:scale-150" />
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Líquido a Pagar</p>
-            <h4 className="text-xl font-black text-emerald-400 relative z-10">R$ 250.480,00</h4>
+            <h4 className="text-xl font-black text-emerald-400 relative z-10">{formatMoney(kpis.liquido)}</h4>
           </div>
         </div>
       </div>
@@ -176,7 +214,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
 
         <div className="flex-1 min-h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <BarChart data={kpis.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorDevido" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#00f3ff" stopOpacity={0.8}/>

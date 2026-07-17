@@ -218,13 +218,13 @@ export default function GWEPEnterpriseApp() {
         ::-webkit-scrollbar-thumb { background: rgba(30, 41, 59, 0.8); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.3); }
       `}} />
-      <div className="flex items-center justify-center h-screen w-screen bg-[#050B14] p-4 lg:p-8 text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden relative">
+      <div className="flex items-center justify-center h-screen w-screen bg-[#050B14] p-2 lg:p-6 text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden relative">
         {/* GLOBAL BACKLIGHT EFFECTS */}
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-cyan-500/20 blur-[180px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[900px] h-[900px] bg-blue-600/20 blur-[180px] rounded-full pointer-events-none" />
 
         {/* MAIN FLOATING GLASS CONTAINER */}
-        <div className="w-full h-full max-w-[1920px] mx-auto bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex overflow-hidden relative z-10">
+        <div className="w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] lg:w-[calc(100vw-3rem)] lg:h-[calc(100vh-3rem)] max-w-[2560px] mx-auto bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex overflow-hidden relative z-10">
 
         {/* SIDEBAR */}
         <aside className="w-[260px] border-r border-white/5 bg-[#080D18]/40 flex flex-col z-20 shrink-0">
