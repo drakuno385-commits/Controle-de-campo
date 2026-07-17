@@ -472,7 +472,7 @@ export default function AppTecnicoMobile() {
               <div className="w-56 h-56 rounded-full border-4 border-cyan-500/30 flex flex-col items-center justify-center relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,0.2)] bg-slate-900/50 backdrop-blur-sm">
                 <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent animate-[spin_4s_linear_infinite]" style={{ transformOrigin: 'bottom center', height: '50%', top: '0' }}></div>
                 <div className="text-center relative z-10 flex flex-col items-center">
-                  <span className="block text-5xl font-black text-cyan-400 font-mono tracking-tight">{simDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
+                  <span className="block text-5xl font-black text-cyan-400 font-mono tracking-tight">{new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
                   <span className="text-xs font-bold text-slate-300 uppercase tracking-widest mt-4 bg-slate-950 border border-slate-800 px-4 py-2 rounded-full shadow-inner">Turno em Andamento</span>
                 </div>
               </div>

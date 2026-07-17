@@ -196,7 +196,7 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Regra de Faturamento</label>
                   <div className="relative">
                     <BarChart3 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-cyan-400 transition-colors" />
-                    <select required value={novo.faturamento} onChange={e=>setNovo({...novo, faturamento: e.target.value})} className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-12 pr-10 py-4 text-sm text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all appearance-none font-medium cursor-pointer">
+                    <select required value={novo.faturamento} onChange={e=>setNovo({...novo, faturamento: e.target.value as any})} className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-12 pr-10 py-4 text-sm text-slate-200 focus:border-cyan-400 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] outline-none transition-all appearance-none font-medium cursor-pointer">
                       <option value="Mensal" className="bg-slate-900">Mensal Fixo</option>
                       <option value="Diário" className="bg-slate-900">Diário por Evento</option>
                     </select>
