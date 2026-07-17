@@ -69,10 +69,10 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
   const empresasAtivas = prestadoras.slice(0, 3);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full auto-rows-min pb-6">
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 h-full auto-rows-min pb-4">
       
       {/* WIDGET 1: EMPRESAS */}
-      <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
+      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
       </div>
 
       {/* WIDGET 2: POSTOS */}
-      <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
+      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
@@ -134,7 +134,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
       </div>
 
       {/* WIDGET 3: MEDIÇÃO E KPIs */}
-      <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
+      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
@@ -169,7 +169,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
       </div>
 
       {/* WIDGET 4: VÍNCULOS PENDENTES */}
-      <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
+      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
@@ -202,7 +202,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
       </div>
 
       {/* WIDGET 5: GRÁFICO RECHARTS */}
-      <div className="lg:col-span-2 bg-white/[0.02] border border-white/5 rounded-3xl p-6 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
+      <div className="xl:col-span-2 bg-white/[0.02] border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-2xl flex flex-col group relative overflow-hidden transition-all hover:bg-white/[0.03]">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">

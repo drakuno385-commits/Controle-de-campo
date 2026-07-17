@@ -218,13 +218,13 @@ export default function GWEPEnterpriseApp() {
         ::-webkit-scrollbar-thumb { background: rgba(30, 41, 59, 0.8); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.3); }
       `}} />
-      <div className="flex items-center justify-center h-screen w-screen bg-[#050B14] p-2 lg:p-6 text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden relative">
+      <div className="flex h-screen w-screen bg-[#050B14] text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden relative">
         {/* GLOBAL BACKLIGHT EFFECTS */}
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-cyan-500/20 blur-[180px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[900px] h-[900px] bg-blue-600/20 blur-[180px] rounded-full pointer-events-none" />
 
-        {/* MAIN FLOATING GLASS CONTAINER */}
-        <div className="w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] lg:w-[calc(100vw-3rem)] lg:h-[calc(100vh-3rem)] max-w-[2560px] mx-auto bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex overflow-hidden relative z-10">
+        {/* FULL SCREEN CONTAINER */}
+        <div className="w-full h-full flex relative z-10">
 
         {/* SIDEBAR */}
         <aside className="w-[260px] border-r border-white/5 bg-[#080D18]/40 flex flex-col z-20 shrink-0">
@@ -284,7 +284,7 @@ export default function GWEPEnterpriseApp() {
         {/* MAIN CONTENT AREA */}
         <main className="flex-1 flex flex-col z-10 w-full h-full relative bg-transparent">
           {/* TOP BAR */}
-          <header className="h-20 border-b border-white/5 bg-transparent px-10 flex items-center justify-between shrink-0 z-30">
+          <header className="h-[72px] border-b border-white/5 bg-[#0A1120]/40 backdrop-blur-md px-8 flex items-center justify-between shrink-0 z-30">
             <div className="flex items-center gap-3">
                <span className="text-slate-500 font-medium tracking-wide">Visão Geral</span>
                <span className="text-slate-700">/</span>
@@ -302,7 +302,7 @@ export default function GWEPEnterpriseApp() {
           </header>
           
           {/* CONTENT WRAPPER */}
-          <div className="flex-1 p-6 lg:p-10 overflow-y-auto">
+          <div className="flex-1 p-6 overflow-y-auto">
             <div className="w-full h-full flex flex-col">
               {activeTab === 'visao-geral' && <TabVisaoGeral prestadoras={prestadoras} postos={postos} apontamentos={apontamentos} onNavigate={setActiveTab} />}
               {activeTab === 'empresas' && canAccess('empresas') && <TabEmpresas prestadoras={prestadoras} onCreate={criarPrestadora} />}
