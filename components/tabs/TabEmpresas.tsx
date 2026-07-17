@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { Building2, Plus, FileText, X, ChevronRight, MoreVertical } from 'lucide-react';
+import { Building2, Plus, FileText, X, ChevronRight, MoreVertical, Search } from 'lucide-react';
 import { Prestadora } from '../../types';
 
 export default function TabEmpresas({ prestadoras, onCreate }: any) {
   const [nova, setNova] = useState({ nome: '', cnpj: '' });
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [busca, setBusca] = useState("");
+
+  const empresasFiltradas = prestadoras.filter((p: Prestadora) => 
+    p.nome.toLowerCase().includes(busca.toLowerCase()) || 
+    p.cnpj.includes(busca)
+  );
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,30 +38,62 @@ export default function TabEmpresas({ prestadoras, onCreate }: any) {
         </button>
       </div>
 
-      {/* MAIN GRID FULL WIDTH */}
+      {/* SEARCH & FILTERS */}
+      <div className="flex gap-4 mb-6 shrink-0">
+        <div className="relative group flex-1 max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+          <input 
+            type="text" 
+            value={busca} 
+            onChange={e => setBusca(e.target.value)} 
+            placeholder="Buscar por razão social ou CNPJ..." 
+            className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 focus:border-cyan-500/50 outline-none transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* MAIN LIST */}
       <div className="flex-1 overflow-y-auto pr-2 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-          {prestadoras.length === 0 && (
-            <div className="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
-              <Building2 className="w-12 h-12 text-slate-600 mb-4" />
-              <p className="text-slate-400 font-medium text-lg">Nenhuma empresa cadastrada</p>
-              <p className="text-slate-500 text-sm mt-1">Clique no botão "Nova Empresa" no topo para começar.</p>
-            </div>
-          )}
-          {prestadoras.map((p: Prestadora) => (
-            <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all duration-300 backdrop-blur-2xl group shadow-lg relative flex items-center gap-4">
-              <div className="w-10 h-10 bg-[#0A1120]/60 border border-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
-                <Building2 className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-slate-100 font-bold tracking-tight text-sm mb-0.5 truncate pr-6" title={p.nome}>{p.nome}</h3>
-                <p className="text-[10px] font-mono text-slate-500">{p.cnpj}</p>
-              </div>
-              <button className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 rounded-lg hover:bg-white/10 text-slate-500 hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-all">
-                <MoreVertical className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
+        <div className="bg-[#0A1120]/40 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-white/5 bg-white/[0.01]">
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[60%]">Empresa</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[30%]">CNPJ</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[10%] text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {empresasFiltradas.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="px-6 py-12 text-center">
+                    <Building2 className="w-8 h-8 text-slate-600 mx-auto mb-3" />
+                    <p className="text-slate-400 font-medium">Nenhuma empresa encontrada.</p>
+                  </td>
+                </tr>
+              )}
+              {empresasFiltradas.map((p: Prestadora) => (
+                <tr key={p.id} className="hover:bg-white/[0.02] group transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-[#0A1120]/80 border border-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:border-cyan-500/30 group-hover:bg-cyan-500/5 transition-all">
+                        <Building2 className="w-5 h-5 text-cyan-500" />
+                      </div>
+                      <span className="font-bold text-slate-200 group-hover:text-cyan-50 transition-colors">{p.nome}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm font-mono text-slate-400">{p.cnpj}</span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors" title="Opções">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

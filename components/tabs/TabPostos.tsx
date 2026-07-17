@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, MapPin, Clock, Plus, Link2, Unlink, Search, 
-  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase, Calendar, X, ChevronRight
+  CheckCircle2, XCircle, Smartphone, LayoutDashboard, Users, GripVertical, Info, FileText, BarChart3, Download, Camera, AlertTriangle, ChevronDown, Briefcase, Calendar, X, ChevronRight, MoreVertical
 } from 'lucide-react';
 import { Posto, Apontamento, Prestadora, Servico, Escala, Perfil } from '../../types';
 import { formatMoney } from '../../utils/formatters';
@@ -15,6 +15,11 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
   const [novo, setNovo] = useState<Partial<Posto>>(defaults);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [busca, setBusca] = useState("");
+
+  const postosFiltrados = postos.filter((p: Posto) => 
+    p.nome.toLowerCase().includes(busca.toLowerCase())
+  );
 
   useEffect(() => {
     if (!novo.escalaId && escalas.length > 0 && !editingId) setNovo(n => ({...n, escalaId: escalas[0].id}));
@@ -71,63 +76,93 @@ export default function TabPostos({ postos, servicos, escalas, prestadoras, onSa
         </button>
       </div>
 
-      {/* MAIN GRID FULL WIDTH */}
-      <div className="flex-1 overflow-y-auto pr-2 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-          {postos.length === 0 && (
-            <div className="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
-              <MapPin className="w-12 h-12 text-slate-600 mb-4" />
-              <p className="text-slate-400 font-medium text-lg">Nenhum posto cadastrado</p>
-              <p className="text-slate-500 text-sm mt-1">Clique no botão "Novo Posto" no topo para começar.</p>
-            </div>
-          )}
-          {postos.map((p: Posto) => {
-            const vinculada = prestadoras?.find((emp: Prestadora) => emp.id === p.prestadoraId);
-            const esc = escalas.find((e:any) => e.id === p.escalaId)?.nome || 'Sem Escala';
-            return (
-              <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 hover:border-blue-500/30 hover:bg-white/[0.04] transition-all duration-300 backdrop-blur-2xl group shadow-lg flex flex-col gap-4 relative">
-                <button onClick={() => startEdit(p)} className="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors opacity-0 group-hover:opacity-100 z-10" title="Editar Posto">
-                  <LayoutDashboard className="w-4 h-4" />
-                </button>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-950/40 border border-white/5 rounded-xl flex items-center justify-center group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all shrink-0">
-                    <MapPin className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <div className="flex-1 min-w-0 pr-6">
-                    <h3 className="text-slate-100 font-bold tracking-tight text-sm mb-1 truncate">{p.nome}</h3>
-                    <div className="flex gap-1.5 flex-wrap">
-                      <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{esc}</span>
-                      {vinculada ? 
-                        <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 flex items-center gap-1 truncate max-w-[120px]"><Link2 className="w-2.5 h-2.5 shrink-0"/> {vinculada.nome}</span> :
-                        <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-rose-950 text-rose-400">Sem Vínculo</span>
-                      }
-                    </div>
-                  </div>
-                </div>
+      {/* SEARCH & FILTERS */}
+      <div className="flex gap-4 mb-6 shrink-0">
+        <div className="relative group flex-1 max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+          <input 
+            type="text" 
+            value={busca} 
+            onChange={e => setBusca(e.target.value)} 
+            placeholder="Buscar posto por nome..." 
+            className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 focus:border-blue-500/50 outline-none transition-colors"
+          />
+        </div>
+      </div>
 
-                <div className="space-y-1.5 mt-auto">
-                  {p.temDiurno && (
-                    <div className="flex justify-between items-center bg-[#0A1120]/60 border border-white/5 px-3 py-2 rounded-lg relative overflow-hidden">
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500/50" />
-                      <span className="text-[11px] text-cyan-400/80 font-bold flex items-center gap-1.5"><Clock className="w-3 h-3"/> {p.horaInicioDiurno}-{p.horaFimDiurno}</span>
-                      <div className="flex flex-col items-end">
-                        <span className="font-mono text-[11px] text-cyan-400 font-bold">{formatMoney(p.valorDiurno ?? 0)}</span>
+      {/* MAIN LIST */}
+      <div className="flex-1 overflow-y-auto pr-2 pb-6">
+        <div className="bg-[#0A1120]/40 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-white/5 bg-white/[0.01]">
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Posto / Operação</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Vínculo</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Turno Diurno</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Turno Noturno</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {postosFiltrados.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <MapPin className="w-8 h-8 text-slate-600 mx-auto mb-3" />
+                    <p className="text-slate-400 font-medium">Nenhum posto encontrado.</p>
+                  </td>
+                </tr>
+              )}
+              {postosFiltrados.map((p: Posto) => {
+                const vinculada = prestadoras?.find((emp: Prestadora) => emp.id === p.prestadoraId);
+                const esc = escalas.find((e:any) => e.id === p.escalaId)?.nome || 'Sem Escala';
+                return (
+                  <tr key={p.id} className="hover:bg-white/[0.02] group transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#0A1120]/80 border border-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:border-blue-500/30 group-hover:bg-blue-500/5 transition-all">
+                          <MapPin className="w-5 h-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-200 group-hover:text-blue-50 transition-colors mb-1">{p.nome}</div>
+                          <div className="flex gap-1.5 flex-wrap">
+                            <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{esc}</span>
+                            <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{p.faturamento}</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {p.temNoturno && (
-                    <div className="flex justify-between items-center bg-[#0A1120]/60 border border-white/5 px-3 py-2 rounded-lg relative overflow-hidden">
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50" />
-                      <span className="text-[11px] text-blue-400/80 font-bold flex items-center gap-1.5"><Clock className="w-3 h-3"/> {p.horaInicioNoturno}-{p.horaFimNoturno}</span>
-                      <div className="flex flex-col items-end">
-                        <span className="font-mono text-[11px] text-blue-400 font-bold">{formatMoney(p.valorNoturno ?? 0)}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                    </td>
+                    <td className="px-6 py-4">
+                      {vinculada ? 
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-cyan-950/50 text-cyan-400 flex items-center gap-1 w-fit"><Link2 className="w-3 h-3"/> {vinculada.nome}</span> :
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-rose-950/50 text-rose-400 w-fit">Sem Vínculo</span>
+                      }
+                    </td>
+                    <td className="px-6 py-4">
+                      {p.temDiurno ? (
+                        <div className="flex flex-col">
+                          <span className="text-xs text-cyan-400 font-bold flex items-center gap-1"><Clock className="w-3 h-3"/> {p.horaInicioDiurno}-{p.horaFimDiurno}</span>
+                          <span className="text-[10px] text-slate-500 font-mono mt-0.5">{formatMoney(p.valorDiurno ?? 0)} ({p.qtdDiurno}x)</span>
+                        </div>
+                      ) : <span className="text-xs text-slate-600">-</span>}
+                    </td>
+                    <td className="px-6 py-4">
+                      {p.temNoturno ? (
+                        <div className="flex flex-col">
+                          <span className="text-xs text-blue-400 font-bold flex items-center gap-1"><Clock className="w-3 h-3"/> {p.horaInicioNoturno}-{p.horaFimNoturno}</span>
+                          <span className="text-[10px] text-slate-500 font-mono mt-0.5">{formatMoney(p.valorNoturno ?? 0)} ({p.qtdNoturno}x)</span>
+                        </div>
+                      ) : <span className="text-xs text-slate-600">-</span>}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button onClick={() => startEdit(p)} className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-blue-400 transition-colors" title="Editar Posto">
+                        <LayoutDashboard className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
 

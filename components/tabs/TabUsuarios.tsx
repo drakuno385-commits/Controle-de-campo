@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Users, CheckCircle2, Plus, X, ChevronRight, Shield, ChevronDown
+  Users, CheckCircle2, Plus, X, ChevronRight, Shield, ChevronDown, Search, LayoutDashboard
 } from 'lucide-react';
 import { Perfil } from '../../types';
 
@@ -9,6 +9,11 @@ export default function TabUsuarios({ perfis, onSave }: any) {
   const [novo, setNovo] = useState<Partial<Perfil>>(defaults);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [busca, setBusca] = useState("");
+
+  const perfisFiltrados = perfis.filter((p: Perfil) => 
+    p.email.toLowerCase().includes(busca.toLowerCase())
+  );
 
   const TELAS_SISTEMA = [
     { id: 'empresas', nome: 'Empresas' },
@@ -69,50 +74,78 @@ export default function TabUsuarios({ perfis, onSave }: any) {
         </button>
       </div>
 
-      {/* MAIN GRID FULL WIDTH */}
+      {/* SEARCH & FILTERS */}
+      <div className="flex gap-4 mb-6 shrink-0">
+        <div className="relative group flex-1 max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+          <input 
+            type="text" 
+            value={busca} 
+            onChange={e => setBusca(e.target.value)} 
+            placeholder="Buscar por e-mail..." 
+            className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 focus:border-cyan-500/50 outline-none transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* MAIN LIST */}
       <div className="flex-1 overflow-y-auto pr-2 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-          {perfis.length === 0 && (
-            <div className="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
-              <Users className="w-12 h-12 text-slate-600 mb-4" />
-              <p className="text-slate-400 font-medium text-lg">Nenhum perfil cadastrado</p>
-            </div>
-          )}
-          {perfis.map((p: Perfil) => (
-            <div key={p.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all duration-300 backdrop-blur-2xl group shadow-lg flex flex-col relative overflow-hidden">
-              <button onClick={() => startEdit(p)} className="absolute top-4 right-4 p-2 text-slate-500 hover:text-cyan-400 hover:bg-white/5 rounded-lg transition-colors z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-              </button>
-              
-              <div className="flex items-center gap-4 mb-5">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl shadow-inner border ${p.role === 'MASTER' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-white/5 text-slate-300 border-white/10'}`}>
-                  {p.email.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0 pr-8">
-                  <h3 className="text-slate-100 font-bold tracking-tight text-lg truncate">{p.email}</h3>
-                  <span className={`text-[10px] font-black tracking-widest uppercase ${p.role === 'MASTER' ? 'text-cyan-400' : 'text-slate-500'}`}>{p.role}</span>
-                </div>
-              </div>
-              
-              {p.role === 'OPERADOR' ? (
-                <div className="mt-auto pt-4 border-t border-white/5">
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Acesso Permitido</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.telas_permitidas.length === 0 && <span className="text-xs text-rose-400 font-medium">Nenhuma aba permitida</span>}
-                    {p.telas_permitidas.map(t => {
-                      const tName = TELAS_SISTEMA.find(s=>s.id === t)?.nome || t;
-                      return <span key={t} className="text-[10px] font-medium bg-[#0A1120]/60 text-slate-400 border border-white/5 px-2 py-1 rounded-md">{tName}</span>
-                    })}
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-auto pt-4 border-t border-cyan-500/20">
-                   <p className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mb-2 flex items-center gap-1"><Shield className="w-3 h-3"/> Permissão Total</p>
-                   <p className="text-xs text-slate-400">Este usuário possui acesso irrestrito ao sistema.</p>
-                </div>
+        <div className="bg-[#0A1120]/40 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-white/5 bg-white/[0.01]">
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[30%]">Usuário / E-mail</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[15%]">Nível</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[45%]">Módulos Permitidos</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest w-[10%] text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {perfisFiltrados.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center">
+                    <Users className="w-8 h-8 text-slate-600 mx-auto mb-3" />
+                    <p className="text-slate-400 font-medium">Nenhum perfil encontrado.</p>
+                  </td>
+                </tr>
               )}
-            </div>
-          ))}
+              {perfisFiltrados.map((p: Perfil) => (
+                <tr key={p.id} className="hover:bg-white/[0.02] group transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-inner border shrink-0 ${p.role === 'MASTER' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-[#0A1120]/80 text-slate-300 border-white/5'}`}>
+                        {p.email.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="font-bold text-slate-200 group-hover:text-cyan-50 transition-colors truncate">{p.email}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-[10px] font-black tracking-widest uppercase px-2 py-1 rounded ${p.role === 'MASTER' ? 'bg-cyan-950/50 text-cyan-400' : 'bg-slate-800 text-slate-400'}`}>
+                      {p.role}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {p.role === 'MASTER' ? (
+                      <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded bg-cyan-950/30 text-cyan-500/80 flex items-center gap-1 w-fit"><Shield className="w-3 h-3"/> Acesso Irrestrito Total</span>
+                    ) : (
+                      <div className="flex flex-wrap gap-1.5">
+                        {p.telas_permitidas.length === 0 && <span className="text-xs text-rose-400 font-medium">Nenhum</span>}
+                        {p.telas_permitidas.map(t => {
+                          const tName = TELAS_SISTEMA.find(s=>s.id === t)?.nome || t;
+                          return <span key={t} className="text-[9px] font-bold uppercase tracking-wider bg-[#0A1120]/60 text-slate-400 border border-white/5 px-2 py-1 rounded-md whitespace-nowrap">{tName}</span>
+                        })}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button onClick={() => startEdit(p)} className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors" title="Editar">
+                      <LayoutDashboard className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
