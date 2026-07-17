@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   Building2, MapPin, BadgeDollarSign, Link2, TrendingUp, TrendingDown, Clock, ChevronRight, Activity, Briefcase
 } from 'lucide-react';
@@ -277,6 +277,7 @@ export default function TabVisaoGeral({ prestadoras, postos, apontamentos, onNav
             </ResponsiveContainer>
           </div>
         </div>
-
       </div>
     </div>
+  );
+}
