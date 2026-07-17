@@ -227,15 +227,15 @@ export default function GWEPEnterpriseApp() {
         <div className="w-full h-full flex relative z-10">
 
         {/* SIDEBAR */}
-        <aside className="w-[260px] border-r border-white/5 bg-[#080D18]/40 flex flex-col z-20 shrink-0">
-          <div className="p-8 flex items-center gap-4 border-b border-white/5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)]">
-              <Shield className="w-6 h-6 text-slate-950" />
+        <aside className="w-[220px] border-r border-white/5 bg-[#080D18]/40 flex flex-col z-20 shrink-0">
+          <div className="p-6 flex items-center gap-3 border-b border-white/5">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)] shrink-0">
+              <Shield className="w-5 h-5 text-slate-950" />
             </div>
-            <h1 className="text-3xl font-black text-slate-100 tracking-tight leading-none">GWEP<br/><span className="text-cyan-400 font-light text-base tracking-widest uppercase mt-1 block">FieldControl</span></h1>
+            <h1 className="text-xl font-black text-slate-100 tracking-tight leading-none truncate">GWEP<br/><span className="text-cyan-400 font-light text-[10px] tracking-widest uppercase mt-0.5 block">FieldControl</span></h1>
           </div>
           
-          <nav className="flex-1 p-5 space-y-3 overflow-y-auto">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             <SidebarBtn active={activeTab==='visao-geral'} onClick={()=>setActiveTab('visao-geral')} icon={<LayoutDashboard />} label="Visão Geral" />
             {canAccess('empresas') && <SidebarBtn active={activeTab==='empresas'} onClick={()=>setActiveTab('empresas')} icon={<Building2 />} label="Empresas" />}
             
